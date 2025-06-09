@@ -1,26 +1,286 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Import Arabic fonts - must be at the top */
+@import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Noto+Sans+Arabic:wght@400;500;600;700&display=swap');
 
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --primary: #059669;
+    --primary-foreground: #f0fdf4;
+    --border: #e4e4e7;
+    --ring: #059669;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+.dark {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+  --primary: #10b981;
+    --border: #262626;
+    --ring: #10b981;
+}
+* {
+  border-color: hsl(var(--border));
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Prevent scrolling - make page fit viewport */
+html, body {
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* Prevent vertical scrolling */
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  color: hsl(var(--foreground));
+  background: hsl(var(--background));
+  font-feature-settings: "rlig" 1, "calt" 1;
+}
+  
+  /* Arabic font family */
+  .font-arabic {
+    font-family: 'Amiri', 'Noto Sans Arabic', serif;
+    direction: rtl;
+    text-align: center;
+    line-height: 1.6;
+    unicode-bidi: isolate;
+  }
+
+  /* RTL Support */
+  html[dir="rtl"] {
+    direction: rtl;
+  }
+
+  html[dir="ltr"] {
+    direction: ltr;
+  }
+
+  /* Arabic text elements */
+  .arabic-text,
+  .dhikr-arabic,
+  .arabic {
+    direction: rtl;
+    text-align: center;
+    unicode-bidi: isolate;
+    font-family: 'Amiri', 'Noto Sans Arabic', serif;
+  }
+
+  /* Mixed content support */
+  .mixed-content {
+    unicode-bidi: plaintext;
+  }
+
+  /* BiDi isolation for standalone Arabic text */
+  .bidi-isolate {
+    unicode-bidi: isolate;
+  }
+  
+  /* Islamic design elements */
+  .islamic-pattern {
+    background-image:
+      radial-gradient(circle at 25% 25%, rgba(5, 150, 105, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 75% 75%, rgba(5, 150, 105, 0.05) 0%, transparent 50%);
+  }
+  
+  /* Enhanced Counter button */
+  .counter-button {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-origin: center;
+  }
+  
+  .counter-button:hover {
+    transform: translateY(-4px) scale(1.05);
+  }
+  
+  .counter-button:active {
+    transform: translateY(-2px) scale(0.98);
+  }
+  
+  /* Ripple effect animation */
+  @keyframes ripple {
+    0% {
+      transform: scale(0);
+      opacity: 0.8;
+    }
+  
+    100% {
+      transform: scale(2);
+      opacity: 0;
+    }
+  }
+  
+  .ripple {
+    animation: ripple 0.3s ease-out;
+  }
+  
+  /* Progress circle */
+  .progress-circle {
+    filter: drop-shadow(0 2px 8px rgba(5, 150, 105, 0.2));
+  }
+  
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: rgba(5, 150, 105, 0.1);
+    border-radius: 3px;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: rgba(5, 150, 105, 0.6);
+    border-radius: 3px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(5, 150, 105, 0.8);
+  }
+  
+  /* Enhanced Animation utilities */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+  
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .animate-fade-in {
+    animation: fadeIn 0.6s ease-out;
+  }
+  
+  @keyframes pulse-emerald {
+  
+    0%,
+    100% {
+      box-shadow: 0 0 0 0 rgba(5, 150, 105, 0.7);
+    }
+  
+    50% {
+      box-shadow: 0 0 0 15px rgba(5, 150, 105, 0);
+    }
+  }
+  
+  .animate-pulse-emerald {
+    animation: pulse-emerald 2s infinite;
+  }
+  
+  /* Enhanced shadow utilities */
+  .shadow-3xl {
+    box-shadow: 
+      0 35px 60px -12px rgba(0, 0, 0, 0.25),
+      0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+  }
+  
+  .hover\:shadow-3xl:hover {
+    box-shadow: 
+      0 35px 60px -12px rgba(0, 0, 0, 0.25),
+      0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+  }
+  
+  /* Animation delays */
+  .delay-1000 {
+    animation-delay: 1s;
+  }
+  
+  .delay-2000 {
+    animation-delay: 2s;
+  }
+  
+  /* Backdrop blur utilities */
+  .backdrop-blur-sm {
+    backdrop-filter: blur(4px);
+  }
+  
+  .backdrop-blur-md {
+    backdrop-filter: blur(12px);
+  }
+  
+  /* Glassmorphism effect */
+  .glass {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  /* Focus styles for accessibility */
+  .focus-ring-emerald:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(5, 150, 105, 0.5);
+  }
+  
+  /* Celebration animation */
+  @keyframes celebrate {
+    0%, 100% {
+      transform: scale(1) rotate(0deg);
+    }
+    25% {
+      transform: scale(1.1) rotate(-5deg);
+    }
+    75% {
+      transform: scale(1.1) rotate(5deg);
+    }
+  }
+  
+  .animate-celebrate {
+    animation: celebrate 0.6s ease-in-out;
+  }
+  
+  /* Floating animation */
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+  
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+  
+  /* Enhanced button hover effects */
+  .button-hover-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Progress bar enhancements */
+  @keyframes progress-pulse {
+    0%, 100% {
+      filter: drop-shadow(0 0 5px rgba(5, 150, 105, 0.5));
+    }
+    50% {
+      filter: drop-shadow(0 0 15px rgba(5, 150, 105, 0.8));
+    }
+  }
+  
+  .progress-pulse {
+    animation: progress-pulse 2s ease-in-out infinite;
+  }
+  
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+  
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  
+    .counter-button:hover {
+      transform: none;
+    }
 }
