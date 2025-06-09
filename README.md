@@ -1,29 +1,49 @@
-# 🕌 Dhikr Counter - Islamic Prayer App
+# 🎤 Thakkir - Voice-Enabled Islamic Dhikr Counter
 
-An offline-first Progressive Web App (PWA) for Islamic dhikr (remembrance) counting, built with Next.js, Turso database, and modern web technologies.
+A revolutionary Islamic dhikr counter PWA with **voice recognition** as the core feature. Simply speak your dhikr and watch the counter increment automatically. Built with Next.js, Turso database, and cutting-edge voice technology.
 
-## ✨ Features
+## 🌟 Revolutionary Voice Recognition
 
-### Core Functionality
+**The first Islamic dhikr counter that listens to your voice!**
+
+- 🗣️ **Speak Naturally**: Just say "SubhanAllah" and watch the counter increment
+- 🌍 **Multilingual**: Recognizes both Arabic pronunciation and transliteration
+- ⚡ **Instant Response**: Real-time recognition with immediate feedback
+- 🎯 **Smart Detection**: Automatically identifies which dhikr you're reciting
+- 🔊 **Offline Capable**: Voice recognition works without internet
+
+## ✨ Key Features
+
+### Voice-Powered Counting
+- **🎤 Voice Recognition**: Primary feature - count by speaking dhikr
+- **👆 Manual Backup**: Traditional tap counting still available
 - **🔄 Offline-First**: Works completely offline with automatic sync when online
-- **👆 Touch Counter**: Large, responsive counter button with haptic feedback
-- **🎯 Progress Tracking**: Set target counts (33, 99, 100, or custom)
-- **📊 Visual Progress**: Beautiful circular progress indicator
-- **🎨 Islamic Design**: Arabic fonts and Islamic-themed UI elements
-- **💾 Data Persistence**: Local SQLite database with cloud sync via Turso
+- **📱 One-Page Design**: Perfectly optimized single-page layout for any screen
+- **🎯 Smart Progress**: Set target counts and track your dhikr journey
+- **💾 Cloud Sync**: Local SQLite database with Turso cloud synchronization
+
+### Supported Voice Dhikr
+The app recognizes these dhikr in both Arabic and transliteration:
+
+- **سُبْحَانَ اللَّهِ** (SubhanAllah) - "Glory be to Allah"
+- **الْحَمْدُ لِلَّهِ** (Alhamdulillah) - "All praise is due to Allah"  
+- **اللَّهُ أَكْبَرُ** (Allahu Akbar) - "Allah is the Greatest"
+- **لَا إِلَهَ إِلَّا اللَّهُ** (La ilaha illa Allah) - "There is no god but Allah"
+- **أَسْتَغْفِرُ اللَّهَ** (Astaghfirullah) - "I seek forgiveness from Allah"
 
 ### Dhikr Library
-- **📚 Pre-loaded Templates**: Common Islamic dhikr with Arabic text, transliteration, and translations
+- **📚 Pre-loaded Templates**: All common Islamic dhikr with voice recognition
 - **🌐 Multi-language**: Arabic, transliteration, and English translations
 - **✨ Beautiful Typography**: Authentic Arabic fonts (Amiri, Noto Sans Arabic)
 
 ### Technical Features
 - **🔌 PWA Ready**: Installable as native app on mobile devices
-- **⚡ Real-time Sync**: Automatic background synchronization
+- **⚡ Client-First Architecture**: Immediate functionality, optional persistence
 - **🌐 Cross-Platform**: Works on iOS, Android, Windows, macOS, and web browsers
 - **🎭 Smooth Animations**: Framer Motion animations and transitions
 - **🎨 Modern UI**: Tailwind CSS with Islamic color scheme
 - **♿ Accessible**: WCAG compliant with proper ARIA labels
+- **🔧 Zero-Config**: Works instantly without any setup required
 
 ## 🛠 Technology Stack
 
@@ -64,52 +84,80 @@ An offline-first Progressive Web App (PWA) for Islamic dhikr (remembrance) count
    bun install
    ```
 
-3. **Setup environment (optional)**
-   ```bash
-   cp .env.local.example .env.local
-   ```
-   
-   For local development, you can leave the Turso variables empty to use local SQLite files.
-
-4. **Run the development server**
+3. **Run the development server**
    ```bash
    bun run dev
    ```
 
-5. **Open your browser**
+4. **Open your browser**
    Navigate to `http://localhost:3000`
 
-### Production Setup with Turso
+The app will work immediately in **demo mode** with voice recognition! Your dhikr counts won't be permanently saved, but all features are functional.
 
-For production deployment with cloud sync:
+### Database Setup (Optional)
 
-1. **Create a Turso account** at [turso.tech](https://turso.tech)
+For permanent data storage and cloud sync, set up Turso:
 
-2. **Create a new database**
+1. **Sign up at [turso.tech](https://turso.tech/)**
+
+2. **Install Turso CLI**
    ```bash
-   turso db create dhikr-app
+   # macOS
+   brew install tursodatabase/tap/turso
+   
+   # Linux/Windows
+   curl -sSfL https://get.tur.so/install.sh | bash
    ```
 
-3. **Get your database URL and auth token**
+3. **Create your database**
    ```bash
-   turso db show dhikr-app
-   turso db tokens create dhikr-app
+   turso auth login
+   turso db create thakkir-dhikr
+   turso db show thakkir-dhikr  # Get your database URL
+   turso db tokens create thakkir-dhikr  # Get your auth token
    ```
 
-4. **Update your environment variables**
+4. **Create `.env.local` file**
    ```bash
-   NEXT_PUBLIC_TURSO_URL=libsql://your-db-name.turso.io
-   NEXT_PUBLIC_TURSO_AUTH_TOKEN=your-auth-token
+   # Add these to your .env.local file:
+   NEXT_PUBLIC_TURSO_DATABASE_URL=libsql://your-database-name.turso.io
+   NEXT_PUBLIC_TURSO_AUTH_TOKEN=your-auth-token-here
    ```
+
+5. **Restart the development server**
+   Your dhikr sessions will now be saved permanently!
+
+### Troubleshooting
+
+**Voice recognition not working?**
+- Ensure you're using a modern browser (Chrome, Safari, Firefox)
+- Allow microphone access when prompted
+- Check that your microphone is working in other applications
+- Try speaking clearly and close to the microphone
+
+**Database/persistence questions?**
+- The app works perfectly without any database setup (demo mode)
+- Demo mode has full voice recognition - dhikr counts just aren't saved between sessions
+- Blue info banner indicates demo mode (this is normal and expected)
+- For permanent storage, follow the Database Setup section above
 
 ## 📱 Usage
 
-### Basic Counting
+### Voice-Powered Counting (Primary Method)
+1. **Open the app** in a modern browser (Chrome, Safari, Firefox)
+2. **Allow microphone access** when prompted
+3. **Select your dhikr** from the dropdown
+4. **Set your target count** (default: 33)
+5. **Click "Start Voice Dhikr"**
+6. **Begin speaking** your chosen dhikr - the counter increments automatically!
+7. **View real-time feedback** showing what was recognized
+8. **Complete your session** when target is reached
+
+### Manual Counting (Backup Method)
 1. Select a dhikr from the dropdown
-2. Set a target count (optional)
-3. Tap "Start" to begin your session
-4. Tap the counter or progress ring to increment
-5. The app tracks your progress automatically
+2. Set a target count (optional) 
+3. Use "Manual +1" button to increment
+4. Track your progress visually
 
 ### Offline Usage
 - The app works completely offline

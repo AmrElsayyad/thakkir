@@ -989,4 +989,452 @@
   .reward {
     font-size: 1.125rem;
   }
+}
+
+/* Voice Recognition Styles */
+.voiceContainer {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding: 1rem;
+  gap: 1rem;
+  background: linear-gradient(135deg, 
+    rgba(236, 253, 245, 0.8) 0%, 
+    rgba(240, 253, 250, 0.8) 50%, 
+    rgba(240, 249, 255, 0.8) 100%);
+  backdrop-filter: blur(8px);
+}
+
+.voiceHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 1rem;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.dhikrSelect {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.95);
+  border: 2px solid rgba(16, 185, 129, 0.3);
+  border-radius: 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: rgb(55, 65, 81);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.dhikrSelect:focus {
+  outline: none;
+  border-color: rgb(16, 185, 129);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+.targetSelector {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.95);
+  border: 2px solid rgba(16, 185, 129, 0.3);
+  border-radius: 0.75rem;
+  color: rgb(16, 185, 129);
+}
+
+.targetInput {
+  width: 4rem;
+  padding: 0.25rem;
+  border: none;
+  background: transparent;
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: center;
+  color: rgb(55, 65, 81);
+}
+
+.targetInput:focus {
+  outline: none;
+}
+
+.voiceMainDisplay {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 1.5rem;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+  gap: 1.5rem;
+}
+
+.voiceMainDisplay .arabicText {
+  font-size: 3rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, rgb(31, 41, 55) 0%, rgb(75, 85, 99) 100%);
+  background-clip: text;
+  color: transparent;
+  font-family: 'Amiri', 'Noto Sans Arabic', serif;
+  direction: rtl;
+  unicode-bidi: isolate;
+  line-height: 1.2;
+}
+
+.voiceMainDisplay .transliteration {
+  font-size: 1.5rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, rgb(5, 150, 105) 0%, rgb(20, 184, 166) 100%);
+  background-clip: text;
+  color: transparent;
+  font-style: italic;
+}
+
+.voiceMainDisplay .translation {
+  font-size: 1.125rem;
+  color: rgb(75, 85, 99);
+  font-weight: 500;
+  max-width: 24rem;
+  line-height: 1.5;
+}
+
+.counterDisplay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+.currentCount {
+  font-size: 4rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, rgb(16, 185, 129) 0%, rgb(20, 184, 166) 100%);
+  background-clip: text;
+  color: transparent;
+  line-height: 1;
+}
+
+.targetDisplay {
+  font-size: 1.25rem;
+  color: rgb(107, 114, 128);
+  font-weight: 600;
+}
+
+.dhikrSpecificCount {
+  font-size: 0.875rem;
+  color: rgb(16, 185, 129);
+  font-weight: 600;
+  margin-top: 0.5rem;
+  padding: 0.25rem 0.5rem;
+  background: rgba(16, 185, 129, 0.1);
+  border-radius: 0.5rem;
+}
+
+.dhikrCountsSummary {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.05);
+  max-width: 20rem;
+}
+
+.progressContainer {
+  width: 100%;
+  max-width: 20rem;
+  height: 0.75rem;
+  background: rgb(229, 231, 235);
+  border-radius: 9999px;
+  overflow: hidden;
+  margin: 1rem 0;
+}
+
+.progressBar {
+  height: 100%;
+  background: linear-gradient(135deg, rgb(16, 185, 129) 0%, rgb(20, 184, 166) 100%);
+  border-radius: 9999px;
+  transition: width 0.5s ease-out;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+}
+
+.statusIndicators {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 3rem;
+}
+
+.listeningIndicator {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: 0.75rem;
+  color: rgb(5, 150, 105);
+  font-weight: 600;
+}
+
+.recognitionDisplay,
+.transcriptDisplay {
+  padding: 0.5rem 1rem;
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 0.75rem;
+  color: rgb(37, 99, 235);
+  font-weight: 500;
+  max-width: 20rem;
+}
+
+.errorDisplay {
+  padding: 0.5rem 1rem;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 0.75rem;
+  color: rgb(220, 38, 38);
+  font-weight: 500;
+  max-width: 20rem;
+}
+
+.voiceControls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 1rem;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.startButton {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 2rem;
+  background: linear-gradient(135deg, rgb(16, 185, 129) 0%, rgb(20, 184, 166) 100%);
+  color: white;
+  border: none;
+  border-radius: 1rem;
+  font-size: 1.125rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.3);
+}
+
+.startButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 20px -3px rgba(16, 185, 129, 0.4);
+}
+
+.startButton:active {
+  transform: translateY(0);
+}
+
+.startButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.stopButton {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 2rem;
+  background: linear-gradient(135deg, rgb(239, 68, 68) 0%, rgb(220, 38, 38) 100%);
+  color: white;
+  border: none;
+  border-radius: 1rem;
+  font-size: 1.125rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.3);
+}
+
+.stopButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 20px -3px rgba(239, 68, 68, 0.4);
+}
+
+.tapButton {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1.5rem;
+  background: rgba(107, 114, 128, 0.1);
+  color: rgb(75, 85, 99);
+  border: 2px solid rgba(107, 114, 128, 0.3);
+  border-radius: 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tapButton:hover {
+  background: rgba(107, 114, 128, 0.2);
+  border-color: rgb(107, 114, 128);
+}
+
+.resetButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: transparent;
+  color: rgb(107, 114, 128);
+  border: 1px solid rgba(107, 114, 128, 0.3);
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.resetButton:hover {
+  background: rgba(107, 114, 128, 0.1);
+  border-color: rgb(107, 114, 128);
+}
+
+.completionOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.completionMessage {
+  background: white;
+  padding: 2rem;
+  border-radius: 1.5rem;
+  text-align: center;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  animation: slideUp 0.3s ease-out;
+}
+
+/* Mobile Optimizations for Voice UI */
+@media (max-width: 768px) {
+  .voiceContainer {
+    padding: 0.75rem;
+    gap: 0.75rem;
+  }
+
+  .voiceHeader {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .dhikrSelect {
+    width: 100%;
+  }
+
+  .voiceMainDisplay {
+    padding: 1.5rem;
+    gap: 1rem;
+  }
+
+  .voiceMainDisplay .arabicText {
+    font-size: 2.5rem;
+  }
+
+  .voiceMainDisplay .transliteration {
+    font-size: 1.25rem;
+  }
+
+  .currentCount {
+    font-size: 3rem;
+  }
+
+  .voiceControls {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .startButton,
+  .stopButton {
+    flex: 1;
+    min-width: 12rem;
+  }
+}
+
+/* Tablet and larger */
+@media (min-width: 768px) {
+  .voiceContainer {
+    max-width: 48rem;
+    margin: 0 auto;
+  }
+
+  .voiceControls {
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .voiceMainDisplay .arabicText {
+    font-size: 4rem;
+  }
+
+  .currentCount {
+    font-size: 5rem;
+  }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { 
+    opacity: 0;
+    transform: translateY(2rem);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bounce {
+  0%, 20%, 53%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40%, 43% {
+    transform: translateY(-1rem);
+  }
+  70% {
+    transform: translateY(-0.5rem);
+  }
+}
+
+/* Add to existing animations */
+.listeningIndicator svg {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
 } 

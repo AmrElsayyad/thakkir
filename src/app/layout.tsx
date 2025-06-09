@@ -2,9 +2,9 @@ import type { Metadata, Viewport } from "next";
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: "Thakkir - Islamic Dhikr Counter | تسبيح",
+  title: "Thakkir - Voice-Enabled Islamic Dhikr Counter | تسبيح",
   description:
-    "Beautiful Islamic dhikr counter app for remembering Allah. Count SubhanAllah, Alhamdulillah, Allahu Akbar, and more with progress tracking.",
+    "Modern Islamic dhikr counter with voice recognition. Count SubhanAllah, Alhamdulillah, Allahu Akbar automatically as you speak. Offline-first with cloud sync.",
   keywords: [
     "dhikr",
     "islamic",
@@ -34,8 +34,9 @@ export const metadata: Metadata = {
       "Beautiful Islamic dhikr counter app for remembering Allah | تطبيق جميل لعد التسبيح وذكر الله",
   },
   icons: {
-    icon: "/favicon.ico",
-    apple: "/apple-touch-icon.png",
+    icon: "/next.svg",
+    apple: "/next.svg",
+    shortcut: "/next.svg",
   },
   manifest: "/manifest.json",
 };

@@ -14,46 +14,49 @@ import type {
 interface DhikrStore {
   // Counter state
   counter: CounterState;
-  
+
   // Current session
   currentSession: DhikrSession | null;
-  
+
   // Dhikr templates
   dhikrTemplates: DhikrTemplate[];
-  
+
   // User sessions history
   sessions: DhikrSession[];
-  
+
   // Sync status
   syncStatus: SyncStatus;
-  
+
   // User preferences
   theme: Theme;
   notifications: NotificationSettings;
-  
+
   // Counter actions
   incrementCounter: () => void;
   resetCounter: () => void;
   setTargetCount: (target: number) => void;
-  
+
   // Session actions
   startNewSession: (templateId: string, targetCount?: number) => void;
+  updateCurrentSessionId: (sessionId: string) => void;
   completeSession: () => void;
   pauseSession: () => void;
   resumeSession: () => void;
-  
+
   // Template actions
-  addDhikrTemplate: (template: Omit<DhikrTemplate, 'id' | 'created_at'>) => void;
+  addDhikrTemplate: (
+    template: Omit<DhikrTemplate, "id" | "created_at">
+  ) => void;
   updateDhikrTemplate: (id: string, updates: Partial<DhikrTemplate>) => void;
   deleteDhikrTemplate: (id: string) => void;
-  
+
   // Sync actions
   updateSyncStatus: (status: Partial<SyncStatus>) => void;
-  
+
   // Settings actions
   setTheme: (theme: Theme) => void;
   updateNotificationSettings: (settings: Partial<NotificationSettings>) => void;
-  
+
   // Data actions
   loadSessions: (sessions: DhikrSession[]) => void;
   loadTemplates: (templates: DhikrTemplate[]) => void;
@@ -67,52 +70,58 @@ export const useDhikrStore = create<DhikrStore>()(
         currentCount: 0,
         isActive: false,
       },
-      
+
       currentSession: null,
       dhikrTemplates: [],
       sessions: [],
-      
+
       syncStatus: {
         isOnline: true,
         pendingChanges: 0,
         syncing: false,
       },
-      
-      theme: 'light',
+
+      theme: "light",
       notifications: {
         enabled: true,
         sound: true,
         vibration: true,
         reminders: true,
       },
-      
+
       // Counter actions
       incrementCounter: () => {
         const { counter, currentSession } = get();
-        
+
         if (!counter.isActive || !currentSession) return;
-        
+
         const newCount = counter.currentCount + 1;
-        const isCompleted = counter.targetCount ? newCount >= counter.targetCount : false;
-        
+        const isCompleted = counter.targetCount
+          ? newCount >= counter.targetCount
+          : false;
+
         set((state) => ({
           counter: {
             ...state.counter,
             currentCount: newCount,
           },
-          currentSession: currentSession ? {
-            ...currentSession,
-            count: newCount,
-            is_completed: isCompleted,
-            completed_at: isCompleted ? new Date().toISOString() : currentSession.completed_at,
-          } : null,
+          currentSession: currentSession
+            ? {
+                ...currentSession,
+                count: newCount,
+                is_completed: isCompleted,
+                completed_at: isCompleted
+                  ? new Date().toISOString()
+                  : currentSession.completed_at,
+              }
+            : null,
           syncStatus: {
             ...state.syncStatus,
             pendingChanges: state.syncStatus.pendingChanges + 1,
           },
         }));
       },
-      
+
       resetCounter: () => {
         set((state) => ({
           counter: {
@@ -123,7 +132,7 @@ export const useDhikrStore = create<DhikrStore>()(
           currentSession: null,
         }));
       },
-      
+
       setTargetCount: (target: number) => {
         set((state) => ({
           counter: {
@@ -132,20 +141,20 @@ export const useDhikrStore = create<DhikrStore>()(
           },
         }));
       },
-      
+
       // Session actions
       startNewSession: (templateId: string, targetCount?: number) => {
         const sessionId = uuidv4();
         const newSession: DhikrSession = {
           id: sessionId,
-          user_id: 'default-user', // TODO: Replace with actual user ID
+          user_id: "default-user", // TODO: Replace with actual user ID
           dhikr_template_id: templateId,
           count: 0,
           target_count: targetCount,
           started_at: new Date().toISOString(),
           is_completed: false,
         };
-        
+
         set((state) => ({
           currentSession: newSession,
           counter: {
@@ -160,17 +169,34 @@ export const useDhikrStore = create<DhikrStore>()(
           },
         }));
       },
-      
+
+      updateCurrentSessionId: (sessionId: string) => {
+        set((state) => ({
+          currentSession: state.currentSession
+            ? {
+                ...state.currentSession,
+                id: sessionId,
+              }
+            : null,
+          counter: state.currentSession
+            ? {
+                ...state.counter,
+                sessionId,
+              }
+            : state.counter,
+        }));
+      },
+
       completeSession: () => {
         const { currentSession } = get();
         if (!currentSession) return;
-        
+
         const completedSession = {
           ...currentSession,
           is_completed: true,
           completed_at: new Date().toISOString(),
         };
-        
+
         set((state) => ({
           currentSession: null,
           sessions: [...state.sessions, completedSession],
@@ -184,7 +210,7 @@ export const useDhikrStore = create<DhikrStore>()(
           },
         }));
       },
-      
+
       pauseSession: () => {
         set((state) => ({
           counter: {
@@ -193,7 +219,7 @@ export const useDhikrStore = create<DhikrStore>()(
           },
         }));
       },
-      
+
       resumeSession: () => {
         set((state) => ({
           counter: {
@@ -202,7 +228,7 @@ export const useDhikrStore = create<DhikrStore>()(
           },
         }));
       },
-      
+
       // Template actions
       addDhikrTemplate: (template) => {
         const newTemplate: DhikrTemplate = {
@@ -210,7 +236,7 @@ export const useDhikrStore = create<DhikrStore>()(
           id: uuidv4(),
           created_at: new Date().toISOString(),
         };
-        
+
         set((state) => ({
           dhikrTemplates: [...state.dhikrTemplates, newTemplate],
           syncStatus: {
@@ -219,7 +245,7 @@ export const useDhikrStore = create<DhikrStore>()(
           },
         }));
       },
-      
+
       updateDhikrTemplate: (id, updates) => {
         set((state) => ({
           dhikrTemplates: state.dhikrTemplates.map((template) =>
@@ -231,17 +257,19 @@ export const useDhikrStore = create<DhikrStore>()(
           },
         }));
       },
-      
+
       deleteDhikrTemplate: (id) => {
         set((state) => ({
-          dhikrTemplates: state.dhikrTemplates.filter((template) => template.id !== id),
+          dhikrTemplates: state.dhikrTemplates.filter(
+            (template) => template.id !== id
+          ),
           syncStatus: {
             ...state.syncStatus,
             pendingChanges: state.syncStatus.pendingChanges + 1,
           },
         }));
       },
-      
+
       // Sync actions
       updateSyncStatus: (status) => {
         set((state) => ({
@@ -251,12 +279,12 @@ export const useDhikrStore = create<DhikrStore>()(
           },
         }));
       },
-      
+
       // Settings actions
       setTheme: (theme) => {
         set({ theme });
       },
-      
+
       updateNotificationSettings: (settings) => {
         set((state) => ({
           notifications: {
@@ -265,18 +293,18 @@ export const useDhikrStore = create<DhikrStore>()(
           },
         }));
       },
-      
+
       // Data actions
       loadSessions: (sessions) => {
         set({ sessions });
       },
-      
+
       loadTemplates: (templates) => {
         set({ dhikrTemplates: templates });
       },
     }),
     {
-      name: 'dhikr-store',
+      name: "dhikr-store",
       partialize: (state) => ({
         // Only persist user preferences and some basic data
         theme: state.theme,

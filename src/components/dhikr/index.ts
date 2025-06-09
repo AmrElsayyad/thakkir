@@ -10,3 +10,4 @@ export { QuoteCard } from "./QuoteCard";
 export { CurrentDhikrInfo } from "./CurrentDhikrInfo";
 export { DesktopLayout } from "./DesktopLayout";
 export { MobileLayout } from "./MobileLayout";
+export { VoiceDhikrCounter } from "./VoiceDhikrCounter";
