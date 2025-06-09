@@ -1,19 +1,15 @@
 "use client";
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from "react";
 
-import { UIDhikrTemplate } from '@/types/ui-dhikr';
+import { useIsMobile } from "@/hooks/useMediaQuery";
+import { UIDhikrTemplate } from "@/types/ui-dhikr";
 
-import { BenefitsCard } from './BenefitsCard';
-import { CelebrationModal } from './CelebrationModal';
-import { CounterDisplay } from './CounterDisplay';
-import { CurrentDhikrInfo } from './CurrentDhikrInfo';
-import styles from './DhikrCounter.module.css';
-import { DhikrHeader } from './DhikrHeader';
-import { DhikrSelector } from './DhikrSelector';
-import { ProgressStats } from './ProgressStats';
-import { QuoteCard } from './QuoteCard';
-import { TargetSelector } from './TargetSelector';
+import { CelebrationModal } from "./CelebrationModal";
+import { DesktopLayout } from "./DesktopLayout";
+import styles from "./DhikrCounter.module.css";
+import { DhikrHeader } from "./DhikrHeader";
+import { MobileLayout } from "./MobileLayout";
 
 const DHIKR_TEMPLATES: UIDhikrTemplate[] = [
   {
@@ -63,6 +59,9 @@ export const DhikrApp = () => {
   const [isCompleted, setIsCompleted] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const [showCelebration, setShowCelebration] = useState(false);
+
+  // Responsive layout detection
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     setIsMounted(true);
@@ -135,71 +134,31 @@ export const DhikrApp = () => {
       />
 
       <main className={styles.mainContent}>
-        {/* Desktop Layout */}
-        <div className={styles.desktopLayout}>
-          <div className={styles.desktopGrid}>
-            {/* Left Sidebar */}
-            <div className={styles.leftSidebar}>
-              <DhikrSelector
-                selectedDhikr={selectedDhikr}
-                dhikrTemplates={DHIKR_TEMPLATES}
-                onDhikrChange={handleDhikrChange}
-              />
-
-              <TargetSelector
-                targetCount={targetCount}
-                onTargetChange={handleTargetChange}
-              />
-
-              <ProgressStats count={count} targetCount={targetCount} />
-            </div>
-
-            {/* Center Content */}
-            <div className={styles.centerContent}>
-              <CounterDisplay
-                count={count}
-                targetCount={targetCount}
-                selectedDhikr={selectedDhikr}
-                isCompleted={isCompleted}
-                onIncrement={handleIncrement}
-                onDecrement={handleDecrement}
-                onReset={handleReset}
-              />
-            </div>
-
-            {/* Right Sidebar */}
-            <div className={styles.rightSidebar}>
-              <QuoteCard />
-              <BenefitsCard />
-              <CurrentDhikrInfo selectedDhikr={selectedDhikr} />
-            </div>
-          </div>
-        </div>
-
-        {/* Mobile Layout */}
-        <div className={styles.mobileLayout}>
-          <DhikrSelector
+        {/* Conditional Rendering - Only ONE layout at a time */}
+        {isMounted && !isMobile ? (
+          <DesktopLayout
             selectedDhikr={selectedDhikr}
             dhikrTemplates={DHIKR_TEMPLATES}
             onDhikrChange={handleDhikrChange}
-          />
-
-          <TargetSelector
             targetCount={targetCount}
             onTargetChange={handleTargetChange}
-            isMobile
-          />
-
-          <CounterDisplay
             count={count}
-            targetCount={targetCount}
-            selectedDhikr={selectedDhikr}
             isCompleted={isCompleted}
             onIncrement={handleIncrement}
             onDecrement={handleDecrement}
             onReset={handleReset}
           />
-        </div>
+        ) : (
+          <MobileLayout
+            selectedDhikr={selectedDhikr}
+            dhikrTemplates={DHIKR_TEMPLATES}
+            onDhikrChange={handleDhikrChange}
+            targetCount={targetCount}
+            count={count}
+            onIncrement={handleIncrement}
+            onReset={handleReset}
+          />
+        )}
       </main>
     </div>
   );

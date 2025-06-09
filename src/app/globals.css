@@ -25,19 +25,18 @@
   border-color: hsl(var(--border));
 }
 
-/* Prevent scrolling - make page fit viewport */
+/* Responsive viewport - allow content to fit properly */
 html, body {
-  height: 100vh;
-  height: 100dvh; /* Dynamic viewport height for mobile browsers */
+  min-height: 100vh;
+  min-height: 100dvh; /* Dynamic viewport height for mobile browsers */
   margin: 0;
   padding: 0;
-  overflow: hidden; /* Prevent vertical scrolling */
 }
 
 /* Mobile WebKit fix for 100vh issues */
 @supports (-webkit-touch-callout: none) {
   html, body {
-    height: -webkit-fill-available;
+    min-height: -webkit-fill-available;
   }
 }
 

@@ -1,84 +1,74 @@
 /* Dhikr Counter Styles - Following WCAG AA Guidelines */
 
-/* Container Styles */
+/* Main container */
 .container {
-  height: 100vh;
-  height: 100dvh;
-  max-height: 100vh;
-  max-height: 100dvh;
-  background: linear-gradient(135deg, rgb(248 250 252) 0%, rgb(236 253 245) 50%, rgb(240 253 250) 100%);
+  min-height: 100vh;
+  min-height: 100dvh;
+  width: 100%;
   position: relative;
-  overflow: hidden;
   display: flex;
   flex-direction: column;
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  overflow-x: hidden;
 }
 
-/* Mobile WebKit support */
-@supports (-webkit-touch-callout: none) {
-  .container {
-    height: -webkit-fill-available;
-    max-height: -webkit-fill-available;
-  }
-}
-
-/* Background Elements */
+/* Background decorative elements */
 .backgroundElements {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
+  z-index: 0;
+}
+
+.backgroundCircle1,
+.backgroundCircle2,
+.backgroundCircle3 {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(5, 150, 105, 0.1) 0%, transparent 70%);
 }
 
 .backgroundCircle1 {
-  position: absolute;
-  top: -10rem;
-  right: -10rem;
-  width: 24rem;
-  height: 24rem;
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(20, 184, 166, 0.15) 100%);
-  border-radius: 50%;
-  filter: blur(3rem);
+  width: 200px;
+  height: 200px;
+  top: 10%;
+  right: -50px;
+  animation: float 6s ease-in-out infinite;
 }
 
 .backgroundCircle2 {
-  position: absolute;
-  bottom: -10rem;
-  left: -10rem;
-  width: 24rem;
-  height: 24rem;
-  background: linear-gradient(45deg, rgba(34, 211, 238, 0.15) 0%, rgba(59, 130, 246, 0.15) 100%);
-  border-radius: 50%;
-  filter: blur(3rem);
+  width: 150px;
+  height: 150px;
+  bottom: 20%;
+  left: -30px;
+  animation: float 8s ease-in-out infinite reverse;
 }
 
 .backgroundCircle3 {
-  position: absolute;
+  width: 100px;
+  height: 100px;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 20rem;
-  height: 20rem;
-  background: linear-gradient(90deg, rgba(16, 185, 129, 0.08) 0%, rgba(20, 184, 166, 0.08) 100%);
-  border-radius: 50%;
-  filter: blur(2rem);
-  animation: pulse 4s ease-in-out infinite;
+  animation: float 10s ease-in-out infinite;
 }
 
-/* Header Styles */
+/* Header styles */
 .header {
   position: relative;
   z-index: 10;
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  flex-shrink: 0; /* Prevent header from shrinking */
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(5, 150, 105, 0.1);
 }
 
 .headerContainer {
-  max-width: 80rem;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 0.75rem 1.5rem;
 }
 
 .headerContent {
@@ -89,69 +79,283 @@
 }
 
 .headerIcon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 2.5rem;
-  height: 2.5rem;
-  background: linear-gradient(135deg, rgb(16, 185, 129) 0%, rgb(20, 184, 166) 100%);
-  border-radius: 0.75rem;
-  box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.1);
-  flex-shrink: 0;
+  font-size: 1.5rem;
 }
 
 .headerIconEmoji {
-  color: white;
-  font-size: 1.25rem;
-  font-family: 'Amiri', 'Noto Sans Arabic', serif;
+  display: inline-block;
+  animation: float 3s ease-in-out infinite;
 }
 
 .headerTitle {
   font-size: 1.5rem;
   font-weight: 700;
-  background: linear-gradient(90deg, rgb(5, 150, 105) 0%, rgb(20, 184, 166) 50%, rgb(34, 211, 238) 100%);
-  background-clip: text;
-  color: transparent;
+  color: #059669;
   margin: 0;
-  font-family: 'Amiri', 'Noto Sans Arabic', serif;
 }
 
-
-
-/* Main Content */
+/* Main content area */
 .mainContent {
-  max-width: 80rem;
-  margin: 0 auto;
-  padding: 1rem 1.5rem;
+  flex: 1;
   position: relative;
-  z-index: 10;
-  flex: 1; /* Take remaining space */
-  overflow-y: auto; /* Allow scrolling if content exceeds height */
-  min-height: 0; /* Allow flex child to shrink */
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
 }
 
-/* Desktop Layout */
+/* Mobile layout */
+.mobileLayout {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  height: 100%;
+  min-height: calc(100vh - 120px); /* Account for header */
+}
+
+.mobileEssentialHeader {
+  display: flex;
+  justify-content: center;
+  padding: 0 1rem;
+}
+
+.mobileSelect {
+  background: white;
+  border: 2px solid #059669;
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #059669;
+  outline: none;
+  transition: all 0.2s ease;
+  min-width: 200px;
+}
+
+.mobileSelect:focus {
+  border-color: #10b981;
+  box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
+}
+
+/* Counter area */
+.mobileCounterArea {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  padding: 1rem;
+}
+
+.mobileCountDisplay {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.mobileCount {
+  font-size: 4rem;
+  font-weight: 900;
+  color: #059669;
+  line-height: 1;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.mobileTarget {
+  font-size: 1.125rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+/* Counter button */
+.mobileCounterButton {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  font-size: 1.25rem;
+  font-weight: 700;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+  border: none;
+  box-shadow: 0 8px 32px rgba(5, 150, 105, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.mobileCounterButton:hover {
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 12px 40px rgba(5, 150, 105, 0.4);
+}
+
+.mobileCounterButton:active {
+  transform: translateY(-2px) scale(0.98);
+}
+
+.mobileButtonArabic {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: white;
+}
+
+.mobileButtonText {
+  font-size: 1rem;
+  font-weight: 600;
+  color: white;
+  letter-spacing: 0.1em;
+}
+
+/* Reset button */
+.mobileResetButton {
+  min-width: 100px;
+  transition: all 0.2s ease;
+}
+
+.mobileResetButton:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive adjustments */
+@media (max-height: 600px) {
+  .mobileLayout {
+    min-height: auto;
+    gap: 1rem;
+  }
+  
+  .mobileCounterArea {
+    gap: 1.5rem;
+    padding: 0.5rem;
+  }
+  
+  .mobileCount {
+    font-size: 3rem;
+  }
+  
+  .mobileCounterButton {
+    width: 150px;
+    height: 150px;
+    font-size: 1rem;
+  }
+  
+  .mobileButtonArabic {
+    font-size: 1.25rem;
+  }
+}
+
+@media (max-width: 375px) {
+  .mobileCounterButton {
+    width: 160px;
+    height: 160px;
+  }
+  
+  .mobileCount {
+    font-size: 3.5rem;
+  }
+}
+
+/* Landscape orientation adjustments */
+@media (orientation: landscape) and (max-height: 500px) {
+  .header {
+    padding: 0.5rem;
+  }
+  
+  .headerTitle {
+    font-size: 1.25rem;
+  }
+  
+  .mobileLayout {
+    flex-direction: row;
+    align-items: center;
+    gap: 2rem;
+    min-height: auto;
+  }
+  
+  .mobileEssentialHeader {
+    flex: 0 0 auto;
+  }
+  
+  .mobileCounterArea {
+    flex: 1;
+    padding: 0.5rem;
+    gap: 1rem;
+  }
+  
+  .mobileCount {
+    font-size: 2.5rem;
+  }
+  
+  .mobileCounterButton {
+    width: 120px;
+    height: 120px;
+    font-size: 0.875rem;
+  }
+  
+  .mobileButtonArabic {
+    font-size: 1rem;
+  }
+}
+
+/* Animations */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes ripple {
+  0% {
+    transform: scale(0);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.6);
+  pointer-events: none;
+  animation: ripple 0.6s ease-out;
+}
+
+/* Desktop Layout - Conditionally rendered */
 .desktopLayout {
-  display: none;
+  display: block;
+  height: 100%;
 }
 
 .desktopGrid {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
-  gap: 1.5rem;
+  gap: 1rem; /* Reduced gap */
   height: 100%;
   max-width: 88rem;
   margin: 0 auto;
   align-items: start;
-  overflow-y: auto;
+  overflow: hidden; /* Prevent scrolling */
 }
 
 /* Card Base Styles */
 .card {
   background: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(12px);
-  border-radius: 1.5rem;
-  padding: 1.5rem;
+  border-radius: 1rem; /* Reduced border radius */
+  padding: 1rem; /* Reduced padding */
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
   border: 1px solid rgba(255, 255, 255, 0.2);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -167,14 +371,14 @@
   grid-column: span 3;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 0.75rem; /* Reduced gap */
 }
 
 .rightSidebar {
   grid-column: span 3;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 0.75rem; /* Reduced gap */
 }
 
 .centerContent {
@@ -300,10 +504,10 @@
 
 /* Counter Button */
 .counterButton {
-  width: 14rem;
-  height: 14rem;
+  width: 10rem; /* Reduced size */
+  height: 10rem; /* Reduced size */
   border-radius: 50%;
-  font-size: 2rem;
+  font-size: 1.5rem; /* Reduced font size */
   font-weight: 700;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   background: linear-gradient(135deg, rgb(16, 185, 129) 0%, rgb(20, 184, 166) 100%);
@@ -346,24 +550,24 @@
 
 .counterButtonArabic {
   font-family: 'Amiri', 'Noto Sans Arabic', serif;
-  font-size: 2.5rem;
-  margin-bottom: 0.25rem;
+  font-size: 1.75rem; /* Reduced size */
+  margin-bottom: 0.125rem; /* Reduced margin */
   direction: rtl;
   unicode-bidi: isolate;
-  line-height: 1.2;
+  line-height: 1.1;
 }
 
 .counterButtonText {
-  font-size: 1.25rem;
+  font-size: 1rem; /* Reduced size */
   font-weight: 600;
-  line-height: 1.2;
-  margin-top: 0.25rem;
+  line-height: 1.1;
+  margin-top: 0.125rem; /* Reduced margin */
 }
 
 /* Progress Ring */
 .progressRing {
   position: relative;
-  margin: 0 auto 2rem;
+  margin: 0 auto 1rem; /* Reduced bottom margin */
 }
 
 .progressSvg {
@@ -399,12 +603,12 @@
 }
 
 .progressCount {
-  font-size: 3rem;
+  font-size: 2rem; /* Reduced size for mobile */
   font-weight: 700;
   background: linear-gradient(135deg, rgb(31, 41, 55) 0%, rgb(75, 85, 99) 100%);
   background-clip: text;
   color: transparent;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem; /* Reduced margin */
 }
 
 .progressTarget {
@@ -432,19 +636,18 @@
 }
 
 .arabicTextLarge {
-  font-size: 3rem;
+  font-size: 2rem; /* Reduced size */
   font-weight: 700;
   background: linear-gradient(135deg, rgb(31, 41, 55) 0%, rgb(75, 85, 99) 100%);
   background-clip: text;
   color: transparent;
-  margin-bottom: 1.5rem;
-  leading: 1.2;
+  margin-bottom: 1rem; /* Reduced margin */
   letter-spacing: 0.05em;
 }
 
 /* Transliteration */
 .transliteration {
-  font-size: 1.5rem;
+  font-size: 1.25rem; /* Reduced size */
   font-weight: 700;
   background: linear-gradient(135deg, rgb(5, 150, 105) 0%, rgb(20, 184, 166) 100%);
   background-clip: text;
@@ -453,7 +656,7 @@
 }
 
 .translation {
-  font-size: 1.25rem;
+  font-size: 1rem; /* Reduced size */
   color: rgb(55, 65, 81); /* WCAG AA: 7.59:1 contrast ratio */
   font-weight: 600;
 }
@@ -532,11 +735,6 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
-
-.progressStatLabel {
-  color: rgb(75, 85, 99); /* WCAG AA: 5.74:1 contrast ratio */
-  font-weight: 500;
 }
 
 .progressStatLabel {
@@ -638,59 +836,54 @@
   margin-top: 0.75rem;
 }
 
-/* Mobile Styles */
-.mobileLayout {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  height: 100%;
-  overflow-y: auto;
-}
-
-/* Animations */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(1.25rem);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes bounce {
-  0%, 20%, 53%, 80%, 100% {
-    transform: translateY(0);
-  }
-  40%, 43% {
-    transform: translateY(-0.75rem);
-  }
-  70% {
-    transform: translateY(-0.375rem);
-  }
-  90% {
-    transform: translateY(-0.125rem);
-  }
-}
-
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.8;
-  }
-}
-
-/* Responsive Design */
-@media (min-width: 1024px) {
-  .desktopLayout {
-    display: block;
+/* Tablet - Progressive Enhancement */
+@media (min-width: 768px) {
+  .mobileLayout {
+    gap: 1rem;
   }
   
-  .mobileLayout {
-    display: none;
+  .mobileEssentialHeader {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1rem;
+    align-items: center;
+  }
+  
+  .mobileTargetButtons {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .mobileTargetButton {
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.9);
+    border: 2px solid rgba(16, 185, 129, 0.3);
+    border-radius: 0.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .mobileTargetButton.active {
+    background: linear-gradient(135deg, rgb(16, 185, 129) 0%, rgb(20, 184, 166) 100%);
+    color: white;
+    border-color: transparent;
+  }
+  
+  .mobileCounterButton {
+    width: 14rem;
+    height: 14rem;
+  }
+}
+
+/* Desktop - Enhanced styling only (layout handled by React) */
+@media (min-width: 1024px) {
+  .desktopGrid {
+    gap: 1.5rem; /* Restore larger gaps on desktop */
+  }
+  
+  .card {
+    padding: 1.5rem; /* Restore larger padding on desktop */
   }
   
   .headerTitle {
