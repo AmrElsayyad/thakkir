@@ -14,8 +14,6 @@ export const DhikrHeader = ({ className }: DhikrHeaderProps) => (
         <h1 className={styles.headerTitle}>
           <span className="font-arabic arabic-text bidi-isolate">تسبيح</span>
         </h1>
-        <p className={styles.headerSubtitle}>Islamic Dhikr Counter</p>
-        <p className={styles.headerDescription}>Remembrance of Allah (swt)</p>
       </div>
     </div>
   </header>
