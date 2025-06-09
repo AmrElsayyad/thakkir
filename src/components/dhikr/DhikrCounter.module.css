@@ -2,10 +2,23 @@
 
 /* Container Styles */
 .container {
-  min-height: 100vh;
+  height: 100vh;
+  height: 100dvh;
+  max-height: 100vh;
+  max-height: 100dvh;
   background: linear-gradient(135deg, rgb(248 250 252) 0%, rgb(236 253 245) 50%, rgb(240 253 250) 100%);
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Mobile WebKit support */
+@supports (-webkit-touch-callout: none) {
+  .container {
+    height: -webkit-fill-available;
+    max-height: -webkit-fill-available;
+  }
 }
 
 /* Background Elements */
@@ -59,12 +72,13 @@
   backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0; /* Prevent header from shrinking */
 }
 
 .headerContainer {
   max-width: 80rem;
   margin: 0 auto;
-  padding: 2rem 1.5rem;
+  padding: 1.5rem 1.5rem;
 }
 
 .headerContent {
@@ -114,9 +128,12 @@
 .mainContent {
   max-width: 80rem;
   margin: 0 auto;
-  padding: 1.5rem;
+  padding: 1rem 1.5rem;
   position: relative;
   z-index: 10;
+  flex: 1; /* Take remaining space */
+  overflow-y: auto; /* Allow scrolling if content exceeds height */
+  min-height: 0; /* Allow flex child to shrink */
 }
 
 /* Desktop Layout */
@@ -127,10 +144,12 @@
 .desktopGrid {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
-  gap: 2rem;
-  min-height: calc(100vh - 12.5rem);
+  gap: 1.5rem;
+  height: 100%;
   max-width: 88rem;
   margin: 0 auto;
+  align-items: start;
+  overflow-y: auto;
 }
 
 /* Card Base Styles */
@@ -629,7 +648,9 @@
 .mobileLayout {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1rem;
+  height: 100%;
+  overflow-y: auto;
 }
 
 /* Animations */

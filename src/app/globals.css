@@ -28,9 +28,17 @@
 /* Prevent scrolling - make page fit viewport */
 html, body {
   height: 100vh;
+  height: 100dvh; /* Dynamic viewport height for mobile browsers */
   margin: 0;
   padding: 0;
   overflow: hidden; /* Prevent vertical scrolling */
+}
+
+/* Mobile WebKit fix for 100vh issues */
+@supports (-webkit-touch-callout: none) {
+  html, body {
+    height: -webkit-fill-available;
+  }
 }
 
 body {
@@ -57,7 +65,7 @@ body {
     direction: ltr;
   }
 
-  /* Arabic text elements */
+  /* Arabic text elements - isolated RTL for Arabic content only */
   .arabic-text,
   .dhikr-arabic,
   .arabic {
@@ -65,6 +73,7 @@ body {
     text-align: center;
     unicode-bidi: isolate;
     font-family: 'Amiri', 'Noto Sans Arabic', serif;
+    display: inline-block; /* Isolate RTL effect to text only */
   }
 
   /* Mixed content support */
