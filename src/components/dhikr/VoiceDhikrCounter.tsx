@@ -11,6 +11,7 @@ import { mapDhikrTemplateToUI, UIDhikrTemplate } from '@/types/ui-dhikr';
 import styles from './DhikrCounter.module.css';
 
 import type { VoiceRecognitionResult } from "@/types/dhikr";
+
 interface VoiceDhikrCounterProps {
   className?: string;
 }
@@ -24,11 +25,11 @@ export const VoiceDhikrCounter = ({ className }: VoiceDhikrCounterProps) => {
   const [recognitionError, setRecognitionError] = useState<string | null>(null);
   const [lastRecognition, setLastRecognition] = useState<string>("");
   const [dhikrCounts, setDhikrCounts] = useState<Record<string, number>>({});
+  const [testMode, setTestMode] = useState(false);
 
   // Database integration
   const {
     isInitialized,
-    error: dbError,
     isPersistenceAvailable,
     databaseType,
     templates,
@@ -40,26 +41,41 @@ export const VoiceDhikrCounter = ({ className }: VoiceDhikrCounterProps) => {
     resetCounter,
   } = useDhikrDatabase();
 
-  // Convert database templates to UI format
-  const uiTemplates: UIDhikrTemplate[] = templates.map(mapDhikrTemplateToUI);
+  // Convert database templates to UI format, removing duplicates
+  const uiTemplates: UIDhikrTemplate[] = templates.reduce(
+    (unique: any[], template) => {
+      // Check if this template already exists by id or transliteration
+      const existing = unique.find(
+        (t) =>
+          t.id === template.id || t.transliteration === template.transliteration
+      );
+      if (!existing) {
+        unique.push(mapDhikrTemplateToUI(template));
+      }
+      return unique;
+    },
+    []
+  );
 
   // Handle voice recognition results
   const handleVoiceRecognition = useCallback(
     async (result: VoiceRecognitionResult) => {
-      console.log("Voice recognition:", result);
+      console.log("Voice recognition result:", result);
 
       setLastRecognition(result.transcript);
+      setRecognitionError(null);
 
       if (result.recognized_dhikr && isSessionActive) {
         // Auto-switch to the recognized dhikr if different from current selection
         if (selectedDhikr && result.recognized_dhikr !== selectedDhikr.id) {
-          const recognizedTemplate = uiTemplates.find(
+          const recognizedTemplate = templates.find(
             (t) => t.id === result.recognized_dhikr
           );
           if (recognizedTemplate) {
-            setSelectedDhikr(recognizedTemplate);
+            const uiTemplate = mapDhikrTemplateToUI(recognizedTemplate);
+            setSelectedDhikr(uiTemplate);
             console.log(
-              `Auto-switched to dhikr: ${recognizedTemplate.transliteration}`
+              `Auto-switched to dhikr: ${uiTemplate.transliteration}`
             );
           }
         }
@@ -70,45 +86,46 @@ export const VoiceDhikrCounter = ({ className }: VoiceDhikrCounterProps) => {
           [result.recognized_dhikr!]: (prev[result.recognized_dhikr!] || 0) + 1,
         }));
 
-        // Also increment the overall session count
-        await incrementDhikrCount("voice");
+        // Increment the overall session count
+        try {
+          await incrementDhikrCount("voice");
 
-        // Provide haptic feedback
-        if (navigator.vibrate) {
-          navigator.vibrate([100, 50, 100]);
+          // Provide haptic feedback
+          if (navigator.vibrate) {
+            navigator.vibrate([100, 50, 100]);
+          }
+
+          console.log(
+            `${result.recognized_dhikr} count:`,
+            (dhikrCounts[result.recognized_dhikr] || 0) + 1,
+            `Total: ${counter.currentCount + 1}`
+          );
+        } catch (error) {
+          console.error("Failed to increment count:", error);
         }
-
-        // Clear recognition error if any
-        setRecognitionError(null);
-
-        console.log(
-          `${result.recognized_dhikr} count:`,
-          (dhikrCounts[result.recognized_dhikr] || 0) + 1
-        );
       }
     },
     [
-      selectedDhikr,
       isSessionActive,
-      currentSession,
-      uiTemplates,
+      selectedDhikr?.id, // Only depend on the ID, not the whole object
       incrementDhikrCount,
-      dhikrCounts,
-    ]
+      templates,
+    ] // Stable dependencies only
   );
 
-  // Voice recognition
+  // Simple voice recognition with Arabic and English support
   const {
     isListening,
     isSupported,
     currentTranscript,
     startListening,
     stopListening,
+    debugInfo,
   } = useVoiceRecognition({
     onRecognition: handleVoiceRecognition,
-    onError: setRecognitionError,
+    onError: useCallback((error: string) => setRecognitionError(error), []),
     continuousListening: true,
-    language: "ar-SA",
+    language: "en-US", // English for better compatibility
   });
 
   // Start a new dhikr session
@@ -118,9 +135,17 @@ export const VoiceDhikrCounter = ({ className }: VoiceDhikrCounterProps) => {
     try {
       await startDhikrSession(selectedDhikr.id, targetCount);
       setIsSessionActive(true);
-      startListening();
+      setDhikrCounts({});
+      setLastRecognition("");
+      setRecognitionError(null);
+
+      // Small delay to ensure session is ready
+      setTimeout(() => {
+        startListening();
+      }, 100);
     } catch (err) {
       console.error("Failed to start session:", err);
+      setRecognitionError("Failed to start session");
     }
   }, [
     selectedDhikr,
@@ -136,7 +161,11 @@ export const VoiceDhikrCounter = ({ className }: VoiceDhikrCounterProps) => {
     setIsSessionActive(false);
 
     if (currentSession) {
-      await completeCurrentSession();
+      try {
+        await completeCurrentSession();
+      } catch (error) {
+        console.error("Failed to complete session:", error);
+      }
     }
   }, [stopListening, currentSession, completeCurrentSession]);
 
@@ -153,7 +182,16 @@ export const VoiceDhikrCounter = ({ className }: VoiceDhikrCounterProps) => {
   // Manual increment (tap functionality)
   const handleManualIncrement = useCallback(async () => {
     if (!isSessionActive || !currentSession) return;
-    await incrementDhikrCount("tap");
+    try {
+      await incrementDhikrCount("tap");
+
+      // Provide haptic feedback
+      if (navigator.vibrate) {
+        navigator.vibrate([50]);
+      }
+    } catch (error) {
+      console.error("Failed to increment manually:", error);
+    }
   }, [isSessionActive, currentSession, incrementDhikrCount]);
 
   // Initialize with first template
@@ -191,9 +229,6 @@ export const VoiceDhikrCounter = ({ className }: VoiceDhikrCounterProps) => {
     );
   }
 
-  // Show info about persistence mode
-  const showPersistenceInfo = !isPersistenceAvailable;
-
   if (!isSupported) {
     return (
       <div className={`${styles.container} ${className}`}>
@@ -218,57 +253,90 @@ export const VoiceDhikrCounter = ({ className }: VoiceDhikrCounterProps) => {
 
   return (
     <div className={`${styles.voiceContainer} ${className}`}>
-      {/* Database Status Banner */}
-      <div
-        className={`border-l-4 p-4 mb-4 rounded-r-lg ${
-          databaseType === "sqlite"
-            ? "bg-green-50 border-green-400"
-            : "bg-blue-50 border-blue-400"
-        }`}
-      >
-        <div className="flex">
-          <div className="flex-shrink-0">
-            <svg
-              className={`h-5 w-5 ${
-                databaseType === "sqlite" ? "text-green-400" : "text-blue-400"
-              }`}
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fillRule="evenodd"
-                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                clipRule="evenodd"
-              />
-            </svg>
-          </div>
-          <div className="ml-3">
-            {databaseType === "sqlite" ? (
-              <>
-                <p className="text-sm text-green-700">
-                  <strong>Local Storage Active:</strong> Voice recognition with
-                  data persistence!
-                </p>
-                <p className="text-xs text-green-600 mt-1">
-                  Your dhikr counts are automatically saved locally and will
-                  persist between sessions.
-                </p>
-              </>
-            ) : (
-              <>
-                <p className="text-sm text-blue-700">
-                  <strong>Demo Mode:</strong> Voice recognition is fully
-                  functional!
-                </p>
-                <p className="text-xs text-blue-600 mt-1">
-                  Your dhikr counts will work perfectly but won't be saved
-                  between sessions. Perfect for trying the app!
-                </p>
-              </>
-            )}
+      {/* Test Mode Banner */}
+      {testMode && (
+        <div className="border-l-4 p-4 mb-4 rounded-r-lg bg-purple-50 border-purple-400">
+          <div className="flex">
+            <div className="flex-shrink-0">
+              <svg
+                className="h-5 w-5 text-purple-400"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </div>
+            <div className="ml-3 flex-1">
+              <p className="text-sm text-purple-700">
+                <strong>🔧 Voice Test Mode:</strong> Testing voice recognition
+                without session logic.
+              </p>
+              <p className="text-xs text-purple-600 mt-1">
+                Try saying dhikr phrases to test if voice recognition is
+                working. No counts will be saved.
+              </p>
+            </div>
           </div>
         </div>
-      </div>
+      )}
+
+      {/* Database Status Banner */}
+      {!testMode && (
+        <div
+          className={`border-l-4 p-4 mb-4 rounded-r-lg ${
+            databaseType === "sqlite"
+              ? "bg-green-50 border-green-400"
+              : "bg-blue-50 border-blue-400"
+          }`}
+        >
+          <div className="flex">
+            <div className="flex-shrink-0">
+              <svg
+                className={`h-5 w-5 ${
+                  databaseType === "sqlite" ? "text-green-400" : "text-blue-400"
+                }`}
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </div>
+            <div className="ml-3 flex-1">
+              {databaseType === "sqlite" ? (
+                <>
+                  <p className="text-sm text-green-700">
+                    <strong>Voice Recognition Active:</strong> Speak your dhikr
+                    clearly and counts will be automatically tracked!
+                  </p>
+                  <p className="text-xs text-green-600 mt-1">
+                    Supports Arabic and English pronunciations. Data is saved
+                    locally and syncs across sessions.
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p className="text-sm text-blue-700">
+                    <strong>Demo Mode:</strong> Voice recognition is fully
+                    functional!
+                  </p>
+                  <p className="text-xs text-blue-600 mt-1">
+                    Supports Arabic and English pronunciations. Counts work
+                    perfectly but won't be saved between sessions.
+                  </p>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Header with Dhikr Selection */}
       <div className={styles.voiceHeader}>
@@ -349,7 +417,16 @@ export const VoiceDhikrCounter = ({ className }: VoiceDhikrCounterProps) => {
           {isListening && (
             <div className={styles.listeningIndicator}>
               <Mic className="animate-pulse" size={20} />
-              <span>Listening...</span>
+              <span>Listening for dhikr...</span>
+            </div>
+          )}
+
+          {!isListening && isSessionActive && (
+            <div className={styles.errorDisplay}>
+              <MicOff size={16} />
+              <span className="text-sm text-amber-600">
+                Microphone stopped - trying to restart...
+              </span>
             </div>
           )}
 
@@ -370,8 +447,65 @@ export const VoiceDhikrCounter = ({ className }: VoiceDhikrCounterProps) => {
           {currentTranscript && (
             <div className={styles.transcriptDisplay}>
               <span className="text-sm text-blue-600">
-                "{currentTranscript}"
+                Processing: "{currentTranscript}"
               </span>
+            </div>
+          )}
+
+          {/* Debug Information */}
+          {(isSessionActive || testMode) && debugInfo.length > 0 && (
+            <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+              <div className="text-xs font-medium text-gray-700 mb-2">
+                Voice Recognition Debug:
+              </div>
+              <div className="space-y-1">
+                {debugInfo.slice(-3).map((info, index) => (
+                  <div key={index} className="text-xs text-gray-600 font-mono">
+                    {info}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Test Voice Recognition */}
+          {testMode && (
+            <div className="mt-4 p-3 bg-purple-50 rounded-lg">
+              <div className="text-sm font-medium text-purple-700 mb-2">
+                🎤 Voice Test Instructions:
+              </div>
+              <div className="text-xs text-purple-600 space-y-1">
+                <div>• Click "Start Test" and allow microphone access</div>
+                <div>
+                  • Try saying: "Subhan Allah", "Allahu Akbar", "Alhamdulillah"
+                </div>
+                <div>• Watch for transcript and dhikr detection above</div>
+                <div>
+                  • If nothing appears, check browser console for errors
+                </div>
+                {isListening && (
+                  <div className="text-purple-800 font-semibold">
+                    🔴 Microphone is active - try speaking now!
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Session Test Instructions */}
+          {isSessionActive && !testMode && (
+            <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+              <div className="text-sm font-medium text-blue-700 mb-2">
+                💡 Voice Session Instructions:
+              </div>
+              <div className="text-xs text-blue-600 space-y-1">
+                <div>• Speak clearly: "Subhan Allah" or "Allah Akbar"</div>
+                <div>• Each recognized dhikr will increment the counter</div>
+                <div>
+                  • Current total count: {counter.currentCount} / {targetCount}
+                </div>
+                <div>• Watch the debug info for recognition details</div>
+              </div>
             </div>
           )}
 
@@ -403,16 +537,66 @@ export const VoiceDhikrCounter = ({ className }: VoiceDhikrCounterProps) => {
 
       {/* Control Buttons */}
       <div className={styles.voiceControls}>
-        {!isSessionActive ? (
-          <Button
-            onClick={handleStartSession}
-            className={styles.startButton}
-            disabled={!selectedDhikr || !isSupported}
-            size="lg"
-          >
-            <Play size={24} />
-            Start Voice Dhikr
-          </Button>
+        {!testMode && !isSessionActive ? (
+          <>
+            <Button
+              onClick={handleStartSession}
+              className={styles.startButton}
+              disabled={!selectedDhikr || !isSupported}
+              size="lg"
+            >
+              <Play size={24} />
+              Start Voice Dhikr
+            </Button>
+
+            <Button
+              onClick={() => setTestMode(true)}
+              variant="outline"
+              size="sm"
+              disabled={!isSupported}
+            >
+              🔧 Test Voice Only
+            </Button>
+          </>
+        ) : testMode ? (
+          <>
+            <Button
+              onClick={() => {
+                if (isListening) {
+                  stopListening();
+                } else {
+                  startListening();
+                }
+              }}
+              className={isListening ? styles.stopButton : styles.startButton}
+              size="lg"
+            >
+              {isListening ? (
+                <>
+                  <MicOff size={24} />
+                  Stop Test
+                </>
+              ) : (
+                <>
+                  <Mic size={24} />
+                  Start Test
+                </>
+              )}
+            </Button>
+
+            <Button
+              onClick={() => {
+                setTestMode(false);
+                stopListening();
+                setLastRecognition("");
+                setRecognitionError(null);
+              }}
+              variant="outline"
+              size="sm"
+            >
+              Exit Test
+            </Button>
+          </>
         ) : (
           <>
             <Button
@@ -446,13 +630,17 @@ export const VoiceDhikrCounter = ({ className }: VoiceDhikrCounterProps) => {
         </Button>
       </div>
 
-      {/* Completion Celebration */}
+      {/* Completion Message */}
       {isCompleted && (
-        <div className={styles.completionOverlay}>
-          <div className={styles.completionMessage}>
-            <div className="text-4xl mb-4">🎉</div>
-            <h3 className="text-xl font-bold mb-2">Alhamdulillah!</h3>
-            <p>You completed {counter.currentCount} dhikr</p>
+        <div className={styles.completionMessage}>
+          <div className="text-center">
+            <div className="text-2xl mb-2">🎉</div>
+            <div className="text-lg font-semibold text-green-600 mb-1">
+              Dhikr Complete!
+            </div>
+            <div className="text-sm text-gray-600">
+              May Allah accept your dhikr
+            </div>
           </div>
         </div>
       )}

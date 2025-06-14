@@ -15,103 +15,245 @@ export const useVoiceRecognition = ({
   onRecognition,
   onError,
   continuousListening = true,
-  language = "ar-SA", // Arabic (Saudi Arabia)
+  language = "en-US", // Changed to English for better compatibility
 }: VoiceRecognitionConfig) => {
   const [isListening, setIsListening] = useState(false);
   const [isSupported, setIsSupported] = useState(false);
   const [currentTranscript, setCurrentTranscript] = useState("");
+  const [debugInfo, setDebugInfo] = useState<string[]>([]);
 
   const recognitionRef = useRef<SpeechRecognition | null>(null);
   const restartTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const shouldRestartRef = useRef(false);
+  const isStoppedManuallyRef = useRef(false);
+  const lastRestartRef = useRef<number>(0);
 
-  // Dhikr patterns for recognition
+  // Use refs for callbacks to avoid recreation issues
+  const onRecognitionRef = useRef(onRecognition);
+  const onErrorRef = useRef(onError);
+
+  // Update refs when callbacks change
+  useEffect(() => {
+    onRecognitionRef.current = onRecognition;
+  }, [onRecognition]);
+
+  useEffect(() => {
+    onErrorRef.current = onError;
+  }, [onError]);
+
+  // Enhanced dhikr patterns for better recognition with more variations
   const dhikrPatterns = useMemo(
     () => ({
       subhanallah: [
+        // Arabic
         "سبحان الله",
         "سُبْحَانَ اللَّهِ",
+        // English transliterations
         "subhan allah",
         "subhanallah",
+        "sophan allah",
+        "sub han allah",
+        "subhan",
+        "subh",
+        "soph",
+        // Common mispronunciations
+        "span allah",
+        "sub allah",
+        "sobhan",
       ],
       alhamdulillah: [
+        // Arabic
         "الحمد لله",
         "الْحَمْدُ لِلَّهِ",
+        // English transliterations
         "alhamdulillah",
         "al hamdu lillah",
+        "elhamdulillah",
+        "alhamdu lillahi",
+        "hamd",
+        "hamdu",
+        "alhamdu",
+        // Common mispronunciations
+        "al hamdu",
+        "hamdullah",
+        "hamdu lillah",
       ],
       "allahu-akbar": [
+        // Arabic
         "الله أكبر",
         "اللَّهُ أَكْبَرُ",
+        // English transliterations
         "allahu akbar",
         "allah akbar",
+        "allah u akbar",
+        "allaahu akbar",
+        "akbar",
+        "allah",
+        // Common mispronunciations
+        "alla akbar",
+        "allah akber",
+        "alahu akbar",
       ],
       "la-ilaha-illa-allah": [
+        // Arabic
         "لا إله إلا الله",
         "لَا إِلَهَ إِلَّا اللَّهُ",
+        // English transliterations
         "la ilaha illa allah",
         "la ilaha illallah",
+        "laa ilaaha illallahu",
+        "la elaha ella allah",
+        "la ilaha",
+        "illallah",
+        "illa allah",
+        // Common mispronunciations
+        "la elaha illa allah",
+        "la ilaha illa",
+        "ilaha illa allah",
       ],
       astaghfirullah: [
+        // Arabic
         "أستغفر الله",
         "أَسْتَغْفِرُ اللَّهَ",
+        // English transliterations
         "astaghfirullah",
         "astagh firullah",
+        "estagh ferullah",
+        "astagfirallah",
+        "astaghfir",
+        "astagfir",
+        "istighfar",
+        // Common mispronunciations
+        "astag firullah",
+        "astaghfir allah",
+        "astagh fir",
       ],
     }),
     []
   );
 
-  // Function to detect which dhikr was spoken
+  // Add debug logging with stable reference
+  const addDebug = useCallback((message: string) => {
+    console.log(`[Voice Recognition] ${message}`);
+    setDebugInfo((prev) => [
+      ...prev.slice(-4),
+      `${new Date().toLocaleTimeString()}: ${message}`,
+    ]);
+  }, []);
+
+  // Enhanced dhikr detection with fuzzy matching
   const detectDhikr = useCallback(
     (transcript: string): string | undefined => {
       const cleanTranscript = transcript.toLowerCase().trim();
+      addDebug(`Analyzing transcript: "${cleanTranscript}"`);
 
+      // Try exact matches first
       for (const [dhikrId, patterns] of Object.entries(dhikrPatterns)) {
         for (const pattern of patterns) {
           if (cleanTranscript.includes(pattern.toLowerCase())) {
+            addDebug(
+              `✅ Exact match found: ${dhikrId} (pattern: "${pattern}")`
+            );
             return dhikrId;
           }
         }
       }
+
+      // Try word-by-word matching for compound dhikr
+      const words = cleanTranscript.split(/\s+/);
+      for (const [dhikrId, patterns] of Object.entries(dhikrPatterns)) {
+        for (const pattern of patterns) {
+          const patternWords = pattern.toLowerCase().split(/\s+/);
+          if (patternWords.length > 1) {
+            const hasAllWords = patternWords.every((word) =>
+              words.some((w) => w.includes(word) || word.includes(w))
+            );
+            if (hasAllWords) {
+              addDebug(
+                `✅ Word match found: ${dhikrId} (pattern: "${pattern}")`
+              );
+              return dhikrId;
+            }
+          }
+        }
+      }
+
+      addDebug(`❌ No dhikr detected in: "${cleanTranscript}"`);
       return undefined;
     },
-    [dhikrPatterns]
+    [dhikrPatterns, addDebug]
   );
 
   const startListening = useCallback(() => {
-    if (!recognitionRef.current || isListening) return;
+    if (!recognitionRef.current) {
+      addDebug("❌ Cannot start - recognition not initialized");
+      return;
+    }
+
+    if (isListening) {
+      addDebug("⚠️ Already listening, skipping start");
+      return;
+    }
 
     try {
+      isStoppedManuallyRef.current = false;
+      lastRestartRef.current = Date.now();
       recognitionRef.current.start();
-      setIsListening(true);
-      console.log("Voice recognition started");
+      addDebug("🎤 Starting voice recognition...");
     } catch (error) {
-      console.error("Error starting voice recognition:", error);
-      onError?.("Failed to start voice recognition");
+      addDebug(`❌ Error starting: ${error}`);
+      onErrorRef.current?.("Failed to start voice recognition");
     }
-  }, [isListening, onError]);
+  }, [isListening, addDebug]);
 
   const stopListening = useCallback(() => {
-    if (!recognitionRef.current || !isListening) return;
+    addDebug("🛑 Stopping voice recognition manually");
+    isStoppedManuallyRef.current = true;
 
-    try {
-      recognitionRef.current.stop();
-      setIsListening(false);
-      shouldRestartRef.current = continuousListening;
-
-      if (restartTimeoutRef.current) {
-        clearTimeout(restartTimeoutRef.current);
-        restartTimeoutRef.current = null;
-      }
-
-      console.log("Voice recognition stopped");
-    } catch (error) {
-      console.error("Error stopping voice recognition:", error);
+    if (restartTimeoutRef.current) {
+      clearTimeout(restartTimeoutRef.current);
+      restartTimeoutRef.current = null;
     }
-  }, [continuousListening, isListening]);
 
-  const initializeRecognition = useCallback(() => {
+    if (recognitionRef.current && isListening) {
+      try {
+        recognitionRef.current.stop();
+      } catch (error) {
+        addDebug(`❌ Error stopping: ${error}`);
+      }
+    }
+  }, [isListening, addDebug]);
+
+  const restartRecognition = useCallback(() => {
+    if (isStoppedManuallyRef.current) {
+      addDebug("⏹️ Manual stop detected, not restarting");
+      return;
+    }
+
+    const timeSinceLastRestart = Date.now() - lastRestartRef.current;
+    if (timeSinceLastRestart < 1000) {
+      addDebug("⚠️ Too soon to restart, waiting longer...");
+      setTimeout(restartRecognition, 2000);
+      return;
+    }
+
+    if (recognitionRef.current) {
+      try {
+        addDebug("🔄 Restarting voice recognition...");
+        lastRestartRef.current = Date.now();
+        recognitionRef.current.start();
+      } catch (error) {
+        addDebug(`❌ Restart failed: ${error}`);
+        // Try again with exponential backoff
+        setTimeout(
+          restartRecognition,
+          Math.min(5000, timeSinceLastRestart * 2)
+        );
+      }
+    }
+  }, [addDebug]);
+
+  // Initialize recognition only once
+  useEffect(() => {
     if (typeof window === "undefined") return;
 
     // Check browser support
@@ -120,19 +262,23 @@ export const useVoiceRecognition = ({
 
     if (!SpeechRecognition) {
       setIsSupported(false);
-      onError?.("Speech recognition not supported in this browser");
+      addDebug("❌ Speech recognition not supported");
+      onErrorRef.current?.("Speech recognition not supported in this browser");
       return;
     }
 
     setIsSupported(true);
+    addDebug("✅ Speech recognition supported");
 
     const recognition = new SpeechRecognition();
 
-    // Configure recognition
+    // Configure for maximum compatibility and robustness
     recognition.continuous = continuousListening;
     recognition.interimResults = true;
     recognition.lang = language;
-    recognition.maxAlternatives = 1;
+    recognition.maxAlternatives = 3; // Get multiple alternatives
+
+    addDebug(`🔧 Configured with language: ${language}`);
 
     // Event handlers
     recognition.onresult = (event) => {
@@ -140,9 +286,10 @@ export const useVoiceRecognition = ({
       let interimTranscript = "";
 
       for (let i = event.resultIndex; i < event.results.length; i++) {
-        const transcript = event.results[i][0].transcript;
+        const result = event.results[i];
+        const transcript = result[0].transcript;
 
-        if (event.results[i].isFinal) {
+        if (result.isFinal) {
           finalTranscript += transcript;
         } else {
           interimTranscript += transcript;
@@ -152,77 +299,134 @@ export const useVoiceRecognition = ({
       const currentText = finalTranscript || interimTranscript;
       setCurrentTranscript(currentText);
 
-      if (finalTranscript) {
+      if (finalTranscript && finalTranscript.trim()) {
+        addDebug(`📝 Final transcript: "${finalTranscript.trim()}"`);
+
+        // Try to detect dhikr
         const recognizedDhikr = detectDhikr(finalTranscript);
         const confidence =
           event.results[event.results.length - 1][0].confidence || 0.8;
 
-        onRecognition({
-          transcript: finalTranscript.trim(),
-          confidence,
-          recognized_dhikr: recognizedDhikr,
-        });
+        if (recognizedDhikr) {
+          addDebug(
+            `🎯 Dhikr detected: ${recognizedDhikr} (confidence: ${confidence.toFixed(
+              2
+            )})`
+          );
 
-        console.log("Recognition result:", {
-          transcript: finalTranscript,
-          recognizedDhikr,
-          confidence,
-        });
+          onRecognitionRef.current({
+            transcript: finalTranscript.trim(),
+            confidence,
+            recognized_dhikr: recognizedDhikr,
+          });
+        } else {
+          // Try alternative results
+          const results = event.results[event.results.length - 1];
+          for (let i = 1; i < results.length; i++) {
+            const altTranscript = results[i].transcript;
+            const altDhikr = detectDhikr(altTranscript);
+            if (altDhikr) {
+              addDebug(
+                `🎯 Alternative dhikr detected: ${altDhikr} from "${altTranscript}"`
+              );
+              onRecognitionRef.current({
+                transcript: altTranscript.trim(),
+                confidence: results[i].confidence || 0.6,
+                recognized_dhikr: altDhikr,
+              });
+              break;
+            }
+          }
+        }
+      } else if (interimTranscript) {
+        addDebug(`🔄 Interim: "${interimTranscript.trim()}"`);
       }
     };
 
     recognition.onstart = () => {
       setIsListening(true);
-      console.log("Speech recognition started");
+      addDebug("🎤 Voice recognition started");
     };
 
     recognition.onend = () => {
       setIsListening(false);
-      console.log("Speech recognition ended");
+      addDebug("🔇 Voice recognition ended");
 
-      // Auto-restart if continuous listening is enabled
-      if (continuousListening && shouldRestartRef.current) {
-        restartTimeoutRef.current = setTimeout(() => {
-          if (recognitionRef.current && shouldRestartRef.current) {
-            try {
-              recognitionRef.current.start();
-            } catch (error) {
-              console.warn("Could not restart recognition:", error);
-            }
-          }
-        }, 1000);
+      // Auto-restart if not stopped manually
+      if (continuousListening && !isStoppedManuallyRef.current) {
+        addDebug("🔄 Scheduling restart...");
+        restartTimeoutRef.current = setTimeout(restartRecognition, 100);
       }
     };
 
+    recognition.onspeechstart = () => {
+      addDebug("🗣️ Speech started");
+    };
+
+    recognition.onspeechend = () => {
+      addDebug("🤐 Speech ended");
+    };
+
+    recognition.onaudiostart = () => {
+      addDebug("🔊 Audio started");
+    };
+
+    recognition.onaudioend = () => {
+      addDebug("🔇 Audio ended");
+    };
+
+    recognition.onnomatch = () => {
+      addDebug("❓ No match found");
+    };
+
     recognition.onerror = (event) => {
-      console.error("Speech recognition error:", event.error);
       setIsListening(false);
+      addDebug(`❌ Error: ${event.error} - ${event.message || "No message"}`);
 
       const errorMessage = (() => {
         switch (event.error) {
           case "no-speech":
-            return "No speech detected. Try speaking closer to the microphone.";
+            addDebug("⏳ No speech detected, will restart...");
+            return null; // Don't show error, just restart
           case "audio-capture":
-            return "No microphone found. Please check your microphone connection.";
+            return "No microphone found. Please check your microphone.";
           case "not-allowed":
             return "Microphone permission denied. Please allow microphone access.";
           case "network":
             return "Network error. Check your internet connection.";
+          case "aborted":
+            addDebug("🛑 Recognition aborted");
+            return null;
+          case "service-not-allowed":
+            return "Speech recognition service not allowed.";
           default:
             return `Speech recognition error: ${event.error}`;
         }
       })();
 
-      onError?.(errorMessage);
+      if (errorMessage) {
+        onErrorRef.current?.(errorMessage);
+      }
+
+      // Auto-restart after recoverable errors
+      if (
+        continuousListening &&
+        !isStoppedManuallyRef.current &&
+        !["not-allowed", "audio-capture", "service-not-allowed"].includes(
+          event.error
+        )
+      ) {
+        addDebug("🔄 Scheduling restart after error...");
+        restartTimeoutRef.current = setTimeout(restartRecognition, 1000);
+      }
     };
 
     recognitionRef.current = recognition;
-  }, [continuousListening, language, onRecognition, onError, detectDhikr]);
-
-  useEffect(() => {
-    initializeRecognition();
+    addDebug("🎛️ Voice recognition initialized");
 
     return () => {
+      addDebug("🧹 Cleaning up voice recognition");
+      isStoppedManuallyRef.current = true;
       if (restartTimeoutRef.current) {
         clearTimeout(restartTimeoutRef.current);
       }
@@ -230,7 +434,13 @@ export const useVoiceRecognition = ({
         recognitionRef.current.stop();
       }
     };
-  }, [initializeRecognition]);
+  }, [
+    continuousListening,
+    language,
+    addDebug,
+    detectDhikr,
+    restartRecognition,
+  ]); // Removed unstable dependencies
 
   return {
     isListening,
@@ -239,6 +449,7 @@ export const useVoiceRecognition = ({
     startListening,
     stopListening,
     dhikrPatterns: Object.keys(dhikrPatterns),
+    debugInfo, // Expose debug info for troubleshooting
   };
 };
 

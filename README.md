@@ -1,6 +1,6 @@
-# 🎤 Thakkir - Voice-Enabled Islamic Dhikr Counter
+# 🎤 Thakkir - Enhanced Voice-Enabled Islamic Dhikr Counter
 
-A revolutionary Islamic dhikr counter PWA with **voice recognition** as the core feature. Simply speak your dhikr and watch the counter increment automatically. Built with Next.js, Turso database, and cutting-edge voice technology.
+Thakkir is a modern, voice-enabled Islamic dhikr counter PWA (Progressive Web App) built with Next.js 15. Experience seamless dhikr counting with **advanced Arabic voice recognition** powered by enhanced pattern matching and intelligent duplicate detection.
 
 ## 🌟 Revolutionary Voice Recognition
 
@@ -11,6 +11,31 @@ A revolutionary Islamic dhikr counter PWA with **voice recognition** as the core
 - ⚡ **Instant Response**: Real-time recognition with immediate feedback
 - 🎯 **Smart Detection**: Automatically identifies which dhikr you're reciting
 - 🔊 **Offline Capable**: Voice recognition works without internet
+
+## ✨ Enhanced Features
+
+### 🎙️ Advanced Voice Recognition
+- **Enhanced Arabic Support**: Improved pattern matching for better recognition of Islamic phrases
+- **Dual Language Processing**: Supports both Arabic and English transliterations
+- **Fuzzy Matching**: Intelligent recognition even with pronunciation variations
+- **Confidence Scoring**: Real-time confidence feedback for better accuracy
+- **Continuous Listening**: Automatic restart and session management
+- **Offline Capability**: Works without internet connection
+
+### 🗃️ Intelligent Data Management
+- **Duplicate Detection**: Automatically identifies and removes duplicate dhikr sessions
+- **Data Integrity Checks**: Comprehensive database health monitoring
+- **Smart Cleanup**: Keeps the most complete sessions while removing duplicates
+- **Orphaned Data Removal**: Cleans up sessions with missing templates
+- **Performance Optimization**: Improved app speed through data cleanup
+
+### 📱 Core Features
+- **5 Essential Dhikr**: SubhanAllah, Alhamdulillah, Allahu Akbar, La ilaha illa Allah, Astaghfirullah
+- **Real-time Counting**: Voice and manual counting with instant feedback
+- **Progress Tracking**: Visual progress bars and session statistics
+- **Responsive Design**: Optimized for mobile, tablet, and desktop
+- **PWA Ready**: Install on your device for offline access
+- **Local Storage**: Data persistence with IndexedDB
 
 ## ✨ Key Features
 
@@ -65,162 +90,199 @@ The app recognizes these dhikr in both Arabic and transliteration:
 - **Workbox** - Advanced caching strategies
 - **Offline Support** - Full app functionality without internet
 
-## 🚀 Getting Started
+## 🚀 Quick Start
 
 ### Prerequisites
-- **Bun** - JavaScript runtime and package manager
-- **Node.js** - For compatibility
+- **Node.js** 18+ 
+- **Bun** (recommended) or npm
 
 ### Installation
 
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd thakkir
-   ```
-
-2. **Install dependencies**
-   ```bash
-   bun install
-   ```
-
-3. **Run the development server**
-   ```bash
-   bun run dev
-   ```
-
-4. **Open your browser**
-   Navigate to `http://localhost:3000`
-
-The app will work immediately in **demo mode** with voice recognition! Your dhikr counts won't be permanently saved, but all features are functional.
-
-### Database Setup (Optional)
-
-For permanent data storage and cloud sync, set up Turso:
-
-1. **Sign up at [turso.tech](https://turso.tech/)**
-
-2. **Install Turso CLI**
-   ```bash
-   # macOS
-   brew install tursodatabase/tap/turso
-   
-   # Linux/Windows
-   curl -sSfL https://get.tur.so/install.sh | bash
-   ```
-
-3. **Create your database**
-   ```bash
-   turso auth login
-   turso db create thakkir-dhikr
-   turso db show thakkir-dhikr  # Get your database URL
-   turso db tokens create thakkir-dhikr  # Get your auth token
-   ```
-
-4. **Create `.env.local` file**
-   ```bash
-   # Add these to your .env.local file:
-   NEXT_PUBLIC_TURSO_DATABASE_URL=libsql://your-database-name.turso.io
-   NEXT_PUBLIC_TURSO_AUTH_TOKEN=your-auth-token-here
-   ```
-
-5. **Restart the development server**
-   Your dhikr sessions will now be saved permanently!
-
-### Troubleshooting
-
-**Voice recognition not working?**
-- Ensure you're using a modern browser (Chrome, Safari, Firefox)
-- Allow microphone access when prompted
-- Check that your microphone is working in other applications
-- Try speaking clearly and close to the microphone
-
-**Database/persistence questions?**
-- The app works perfectly without any database setup (demo mode)
-- Demo mode has full voice recognition - dhikr counts just aren't saved between sessions
-- Blue info banner indicates demo mode (this is normal and expected)
-- For permanent storage, follow the Database Setup section above
-
-## 📱 Usage
-
-### Voice-Powered Counting (Primary Method)
-1. **Open the app** in a modern browser (Chrome, Safari, Firefox)
-2. **Allow microphone access** when prompted
-3. **Select your dhikr** from the dropdown
-4. **Set your target count** (default: 33)
-5. **Click "Start Voice Dhikr"**
-6. **Begin speaking** your chosen dhikr - the counter increments automatically!
-7. **View real-time feedback** showing what was recognized
-8. **Complete your session** when target is reached
-
-### Manual Counting (Backup Method)
-1. Select a dhikr from the dropdown
-2. Set a target count (optional) 
-3. Use "Manual +1" button to increment
-4. Track your progress visually
-
-### Offline Usage
-- The app works completely offline
-- Your dhikr counts are saved locally
-- Data syncs automatically when you reconnect
-- Offline indicator shows connection status
-
-### PWA Installation
-1. Open the app in your browser
-2. Look for "Install" or "Add to Home Screen" prompt
-3. Install to use as a native app
-4. Launch from your home screen or app drawer
-
-## 🏗 Architecture
-
-### Database Schema
-```sql
--- Dhikr templates (pre-loaded Islamic dhikr)
-dhikr_templates (id, arabic_text, transliteration, translation, category, reference)
-
--- User sessions (counting sessions)
-dhikr_sessions (id, user_id, dhikr_template_id, count, target_count, started_at, completed_at)
-
--- Individual counts (detailed tracking)
-dhikr_counts (id, session_id, count_method, timestamp)
-
--- User goals and preferences
-user_goals (id, user_id, dhikr_template_id, daily_target, weekly_target)
-```
-
-### Offline-First Strategy
-1. **Local-First Writes**: All data written to local SQLite first
-2. **Background Sync**: Automatic sync when online
-3. **Conflict Resolution**: Simple last-write-wins for dhikr data
-4. **Graceful Degradation**: Full functionality offline
-
-### State Management
-- **Zustand Store**: Centralized state with persistence
-- **Database Service**: Clean separation of concerns
-- **Sync Manager**: Handles online/offline transitions
-
-## 🔧 Scripts
-
 ```bash
-# Development
-bun run dev          # Start development server
-bun run build        # Build for production
-bun run start        # Start production server
-bun run lint         # Run ESLint
-bun run type-check   # Run TypeScript checks
+# Clone the repository
+git clone https://github.com/yourusername/thakkir.git
+cd thakkir
 
-# Database
-bun run db:migrate   # Run database migrations (if needed)
-bun run db:seed      # Seed default dhikr templates
+# Install dependencies with Bun (recommended)
+bun install
+
+# Or with npm
+npm install
+
+# Start development server
+bun dev
+# Or with npm
+npm run dev
 ```
+
+Open [http://localhost:3000](http://localhost:3000) to see the app.
+
+## 🎯 Voice Recognition Guide
+
+### Supported Phrases
+The enhanced voice recognition system supports multiple variations of each dhikr:
+
+#### SubhanAllah (سُبْحَانَ اللَّهِ)
+- Arabic: "سبحان الله"
+- English: "subhan allah", "subhanallah", "sobhan allah"
+
+#### Alhamdulillah (الْحَمْدُ لِلَّهِ)
+- Arabic: "الحمد لله"
+- English: "alhamdulillah", "al hamdu lillah", "elhamdulillah"
+
+#### Allahu Akbar (اللَّهُ أَكْبَرُ)
+- Arabic: "الله أكبر"
+- English: "allahu akbar", "allah akbar", "allah u akbar"
+
+#### La ilaha illa Allah (لَا إِلَهَ إِلَّا اللَّهُ)
+- Arabic: "لا إله إلا الله"
+- English: "la ilaha illa allah", "la ilaha illallah"
+
+#### Astaghfirullah (أَسْتَغْفِرُ اللَّهَ)
+- Arabic: "أستغفر الله"
+- English: "astaghfirullah", "astagh firullah"
+
+### Tips for Better Recognition
+1. **Speak Clearly**: Pronounce each word distinctly
+2. **Normal Pace**: Don't speak too fast or too slow
+3. **Quiet Environment**: Minimize background noise
+4. **Microphone Permission**: Ensure browser has microphone access
+5. **Supported Browsers**: Use Chrome, Safari, or Firefox for best results
+
+## 🛠️ Data Management
+
+### Automatic Cleanup
+The app includes intelligent data cleanup features:
+
+- **Duplicate Detection**: Finds sessions with same template, user, and timeframe
+- **Smart Preservation**: Keeps the most complete and recent sessions
+- **Integrity Checks**: Regular database health monitoring
+- **Performance Boost**: Improved app speed after cleanup
+
+### Manual Cleanup
+Access the cleanup tool:
+1. Look for the "Cleanup" button in the status banner (SQLite mode only)
+2. Review the integrity report
+3. Run cleanup to remove duplicates and orphaned data
+4. App will reload with cleaned data
+
+## 🏗️ Architecture
+
+### Tech Stack
+- **Frontend**: Next.js 15, React 19, TypeScript
+- **Styling**: Tailwind CSS with custom voice UI components
+- **Voice Recognition**: Enhanced Web Speech API with custom pattern matching
+- **State Management**: Zustand with persistence
+- **Database**: IndexedDB via custom SQLite service
+- **PWA**: Next.js PWA configuration
+
+### Enhanced Voice Recognition System
+```typescript
+// Advanced pattern matching with confidence scoring
+const DHIKR_PATTERNS = {
+  subhanallah: {
+    arabic: ["سبحان الله", "سُبْحَانَ اللَّهِ"],
+    transliteration: ["subhan allah", "subhanallah", "sobhan allah"],
+    keywords: ["subhan", "sophan", "sobhan"],
+    weight: 1.0
+  }
+  // ... more patterns
+};
+
+// Fuzzy matching with similarity scoring
+function detectDhikrAdvanced(transcript: string) {
+  // Exact match (95% confidence)
+  // Keyword matching (85% confidence)  
+  // Fuzzy matching with Levenshtein distance
+  return { dhikr, confidence, method };
+}
+```
+
+### Data Deduplication
+```typescript
+// Intelligent duplicate detection
+class DataDeduplication {
+  // Find duplicates based on:
+  // - Same user and template
+  // - Started within 5 minutes
+  // - Similar target count
+  static async findDuplicateSessions()
+  
+  // Keep best session (completed > higher count > more recent)
+  static async removeDuplicateSessions()
+}
+```
+
+## 🎨 Customization
+
+### Voice Recognition Settings
+```typescript
+// Configure recognition behavior
+const voiceConfig = {
+  language: "both", // "arabic" | "english" | "both"
+  continuousListening: true,
+  confidenceThreshold: 0.6,
+  autoRestart: true
+};
+```
+
+### Database Configuration
+```typescript
+// Choose database mode
+const dbConfig = {
+  type: "sqlite", // "sqlite" | "demo"
+  autoCleanup: true,
+  integrityChecks: true
+};
+```
+
+## 📱 PWA Installation
+
+### Mobile Installation
+1. Open the app in your mobile browser
+2. Look for "Add to Home Screen" prompt
+3. Follow the installation steps
+4. Launch from your home screen
+
+### Desktop Installation
+1. Look for the install icon in your browser's address bar
+2. Click "Install" when prompted
+3. Launch as a native app
 
 ## 🤝 Contributing
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+
+### Development Setup
+```bash
+# Fork and clone the repository
+git clone https://github.com/yourusername/thakkir.git
+
+# Create a feature branch
+git checkout -b feature/enhanced-recognition
+
+# Make your changes and test thoroughly
+bun dev
+
+# Submit a pull request
+```
+
+## 🐛 Troubleshooting
+
+### Voice Recognition Issues
+- **Not Working**: Check microphone permissions in browser settings
+- **Poor Accuracy**: Ensure quiet environment and clear pronunciation
+- **Browser Support**: Use Chrome, Safari, or Firefox for best results
+
+### Data Issues
+- **Duplicates**: Use the built-in cleanup tool in SQLite mode
+- **Missing Data**: Check if you're in demo mode vs SQLite mode
+- **Performance**: Run data cleanup to optimize database
+
+### General Issues
+- **App Not Loading**: Clear browser cache and reload
+- **PWA Problems**: Try reinstalling the PWA
+- **Audio Issues**: Check device audio settings
 
 ## 📄 License
 
@@ -228,20 +290,19 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
-- **Islamic Content**: Traditional dhikr sourced from authentic Islamic texts
-- **Design Inspiration**: Islamic geometric patterns and calligraphy
-- **Turso Team**: For the excellent offline-first database solution
-- **Muslim Developer Community**: For feedback and contributions
+- **Inspiration**: [Tarteel](https://tarteel.ai) for advanced Arabic voice recognition patterns
+- **Voice Recognition**: Enhanced with custom pattern matching algorithms
+- **Islamic Content**: Traditional dhikr phrases with proper Arabic text
+- **Community**: Muslim developers and users who provided feedback
 
 ## 📞 Support
 
-For questions, issues, or contributions:
-- Open an issue on GitHub
-- Reach out to the development team
-- Check the documentation for common solutions
+- **Issues**: [GitHub Issues](https://github.com/yourusername/thakkir/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/yourusername/thakkir/discussions)
+- **Email**: support@thakkir.app
 
 ---
 
-**May Allah accept our dhikr and grant us taqwa** 🤲
+**May Allah accept our dhikr and grant us His remembrance at all times. Ameen.** 🤲
 
-*Built with ❤️ for the Muslim community*
+*Built with ❤️ for the Muslim Ummah*

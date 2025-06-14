@@ -87,6 +87,11 @@ export interface VoiceRecognitionResult {
   transcript: string;
   confidence: number;
   recognized_dhikr?: string;
+  detection_method?: "exact" | "fuzzy" | "keyword" | "phonetic";
+  raw_alternatives?: Array<{
+    transcript: string;
+    confidence: number;
+  }>;
 }
 
 // Sync status
