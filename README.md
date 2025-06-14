@@ -1,308 +1,352 @@
-# 🎤 Thakkir - Enhanced Voice-Enabled Islamic Dhikr Counter
+# Thakkir (ذَكِّر) - Voice-Enabled Islamic Dhikr Counter
 
-Thakkir is a modern, voice-enabled Islamic dhikr counter PWA (Progressive Web App) built with Next.js 15. Experience seamless dhikr counting with **advanced Arabic voice recognition** powered by enhanced pattern matching and intelligent duplicate detection.
+**Thakkir** (ذَكِّر) is a modern Islamic dhikr counter PWA built with Next.js, featuring experimental voice recognition capabilities alongside traditional manual counting.
 
-## 🌟 Revolutionary Voice Recognition
+> **🚧 Voice Recognition Status**: Currently in development with limited accuracy - manual counting remains the primary reliable method
 
-**The first Islamic dhikr counter that listens to your voice!**
+## ✨ Why Thakkir?
 
-- 🗣️ **Speak Naturally**: Just say "SubhanAllah" and watch the counter increment
-- 🌍 **Multilingual**: Recognizes both Arabic pronunciation and transliteration
-- ⚡ **Instant Response**: Real-time recognition with immediate feedback
-- 🎯 **Smart Detection**: Automatically identifies which dhikr you're reciting
-- 🔊 **Offline Capable**: Voice recognition works without internet
+- **👆 Reliable Manual Counting**: Traditional tap-to-count method that always works
+- **🎤 Experimental Voice Features**: Voice recognition in development (accuracy varies)
+- **🚀 Zero Setup**: Works immediately - no registration, no configuration
+- **📱 One-Page Design**: Clean, responsive layout that fits any screen
+- **⚡ Offline-Ready**: Full functionality without internet connection
+- **🔄 Dual Input Methods**: Choose between manual tapping or experimental voice recognition
 
-## ✨ Enhanced Features
+## 🗣️ Voice Recognition (Experimental)
 
-### 🎙️ Advanced Voice Recognition
-- **Enhanced Arabic Support**: Improved pattern matching for better recognition of Islamic phrases
-- **Dual Language Processing**: Supports both Arabic and English transliterations
-- **Fuzzy Matching**: Intelligent recognition even with pronunciation variations
-- **Confidence Scoring**: Real-time confidence feedback for better accuracy
-- **Continuous Listening**: Automatic restart and session management
-- **Offline Capability**: Works without internet connection
+> **⚠️ Important**: Voice recognition is experimental and has significant limitations. Manual counting is recommended for reliable dhikr tracking.
 
-### 🗃️ Intelligent Data Management
-- **Duplicate Detection**: Automatically identifies and removes duplicate dhikr sessions
-- **Data Integrity Checks**: Comprehensive database health monitoring
-- **Smart Cleanup**: Keeps the most complete sessions while removing duplicates
-- **Orphaned Data Removal**: Cleans up sessions with missing templates
-- **Performance Optimization**: Improved app speed through data cleanup
+The app attempts to recognize these 5 dhikr phrases, but accuracy varies significantly:
 
-### 📱 Core Features
-- **5 Essential Dhikr**: SubhanAllah, Alhamdulillah, Allahu Akbar, La ilaha illa Allah, Astaghfirullah
-- **Real-time Counting**: Voice and manual counting with instant feedback
-- **Progress Tracking**: Visual progress bars and session statistics
-- **Responsive Design**: Optimized for mobile, tablet, and desktop
-- **PWA Ready**: Install on your device for offline access
-- **Local Storage**: Data persistence with IndexedDB
-
-## ✨ Key Features
-
-### Voice-Powered Counting
-- **🎤 Voice Recognition**: Primary feature - count by speaking dhikr
-- **👆 Manual Backup**: Traditional tap counting still available
-- **🔄 Offline-First**: Works completely offline with automatic sync when online
-- **📱 One-Page Design**: Perfectly optimized single-page layout for any screen
-- **🎯 Smart Progress**: Set target counts and track your dhikr journey
-- **💾 Cloud Sync**: Local SQLite database with Turso cloud synchronization
-
-### Supported Voice Dhikr
-The app recognizes these dhikr in both Arabic and transliteration:
-
-- **سُبْحَانَ اللَّهِ** (SubhanAllah) - "Glory be to Allah"
-- **الْحَمْدُ لِلَّهِ** (Alhamdulillah) - "All praise is due to Allah"  
-- **اللَّهُ أَكْبَرُ** (Allahu Akbar) - "Allah is the Greatest"
-- **لَا إِلَهَ إِلَّا اللَّهُ** (La ilaha illa Allah) - "There is no god but Allah"
-- **أَسْتَغْفِرُ اللَّهَ** (Astaghfirullah) - "I seek forgiveness from Allah"
-
-### Dhikr Library
-- **📚 Pre-loaded Templates**: All common Islamic dhikr with voice recognition
-- **🌐 Multi-language**: Arabic, transliteration, and English translations
-- **✨ Beautiful Typography**: Authentic Arabic fonts (Amiri, Noto Sans Arabic)
-
-### Technical Features
-- **🔌 PWA Ready**: Installable as native app on mobile devices
-- **⚡ Client-First Architecture**: Immediate functionality, optional persistence
-- **🌐 Cross-Platform**: Works on iOS, Android, Windows, macOS, and web browsers
-- **🎭 Smooth Animations**: Framer Motion animations and transitions
-- **🎨 Modern UI**: Tailwind CSS with Islamic color scheme
-- **♿ Accessible**: WCAG compliant with proper ARIA labels
-- **🔧 Zero-Config**: Works instantly without any setup required
-
-## 🛠 Technology Stack
-
-### Frontend
-- **Next.js** - React framework with App Router
-- **TypeScript** - Type safety and better DX
-- **Tailwind CSS** - Utility-first styling
-- **Framer Motion** - Smooth animations
-- **Lucide React** - Beautiful icons
-- **Zustand** - Lightweight state management
-
-### Database & Backend
-- **Turso** - SQLite at the edge with offline sync
-- **libSQL** - Turso's SQLite fork with sync capabilities
-- **Database-per-User** - Isolated user data architecture
-
-### PWA & Performance
-- **Next-PWA** - Service worker and PWA functionality
-- **Workbox** - Advanced caching strategies
-- **Offline Support** - Full app functionality without internet
+| Arabic | Transliteration | English | Recognition Status |
+|--------|----------------|---------|--------------------|
+| **سُبْحَانَ اللَّهِ** | SubhanAllah | Glory be to Allah | ⚠️ Limited accuracy |
+| **الْحَمْدُ لِلَّهِ** | Alhamdulillah | All praise is due to Allah | ⚠️ Limited accuracy |
+| **اللَّهُ أَكْبَرُ** | Allahu Akbar | Allah is the Greatest | ⚠️ Limited accuracy |
+| **لَا إِلَهَ إِلَّا اللَّهُ** | La ilaha illa Allah | There is no god but Allah | ⚠️ Limited accuracy |
+| **أَسْتَغْفِرُ اللَّهَ** | Astaghfirullah | I seek forgiveness from Allah | ⚠️ Limited accuracy |
 
 ## 🚀 Quick Start
 
-### Prerequisites
-- **Node.js** 18+ 
-- **Bun** (recommended) or npm
-
-### Installation
-
+### 1. Installation
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/thakkir.git
+git clone https://github.com/AmrElsayyad/thakkir.git
 cd thakkir
 
-# Install dependencies with Bun (recommended)
+# Install dependencies (Bun recommended)
 bun install
-
-# Or with npm
-npm install
 
 # Start development server
 bun dev
-# Or with npm
-npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to see the app.
+Open [http://localhost:3000](http://localhost:3000) and start counting!
 
-## 🎯 Voice Recognition Guide
+### 2. First Use
+1. **Open the app** - Works immediately in demo mode
+2. **Allow microphone** - Click "Allow" when browser prompts
+3. **Start speaking** - Say any dhikr phrase
+4. **Watch it count** - Automatic recognition and counting
 
-### Supported Phrases
-The enhanced voice recognition system supports multiple variations of each dhikr:
+## 🎯 How to Use Voice Recognition (Experimental)
 
-#### SubhanAllah (سُبْحَانَ اللَّهِ)
-- Arabic: "سبحان الله"
-- English: "subhan allah", "subhanallah", "sobhan allah"
+> **💡 Recommendation**: Start with manual counting for reliable dhikr tracking. Voice recognition can be tested as an additional feature.
 
-#### Alhamdulillah (الْحَمْدُ لِلَّهِ)
-- Arabic: "الحمد لله"
-- English: "alhamdulillah", "al hamdu lillah", "elhamdulillah"
+### Current Limitations
+- **Low Recognition Accuracy**: Voice detection is inconsistent and unreliable
+- **Browser Compatibility**: Works only in Chrome, Edge, and some mobile browsers
+- **Language Processing**: Arabic pronunciation recognition needs significant improvement
+- **Background Noise**: Very sensitive to ambient sound
+- **False Positives**: May count unintended sounds or words
 
-#### Allahu Akbar (اللَّهُ أَكْبَرُ)
-- Arabic: "الله أكبر"
-- English: "allahu akbar", "allah akbar", "allah u akbar"
+### If You Want to Test Voice Features
+1. **Use Chrome or Edge browser** (best compatibility)
+2. **Click "Start Voice Recognition"**
+3. **Allow microphone access** when prompted
+4. **Speak very clearly and slowly**
+5. **Expect mixed results** - manual verification recommended
 
-#### La ilaha illa Allah (لَا إِلَهَ إِلَّا اللَّهُ)
-- Arabic: "لا إله إلا الله"
-- English: "la ilaha illa allah", "la ilaha illallah"
+### Voice Recognition Tips (For Testing)
+- **Perfect pronunciation required** - especially for Arabic phrases
+- **Completely quiet environment** - any background noise interferes
+- **Speak slowly and distinctly** - fast speech won't be recognized
+- **Use transliteration** - English versions may work better than Arabic
+- **Keep backup manual counting** - voice recognition will miss counts
 
-#### Astaghfirullah (أَسْتَغْفِرُ اللَّهَ)
-- Arabic: "أستغفر الله"
-- English: "astaghfirullah", "astagh firullah"
+### Browser Support Status
+```
+✅ Chrome (Desktop) - Best support but still unreliable
+✅ Edge (Desktop) - Similar to Chrome
+⚠️ Safari - Limited support, inconsistent results
+❌ Firefox - Poor Web Speech API support
+⚠️ Mobile browsers - Varies significantly
+```
 
-### Tips for Better Recognition
-1. **Speak Clearly**: Pronounce each word distinctly
-2. **Normal Pace**: Don't speak too fast or too slow
-3. **Quiet Environment**: Minimize background noise
-4. **Microphone Permission**: Ensure browser has microphone access
-5. **Supported Browsers**: Use Chrome, Safari, or Firefox for best results
+## 🛠️ Technology Stack
 
-## 🛠️ Data Management
+### Core Technologies
+- **[Next.js 15](https://nextjs.org/)** - React framework with App Router
+- **[TypeScript](https://typescriptlang.org/)** - Type safety and better developer experience
+- **[Tailwind CSS](https://tailwindcss.com/)** - Utility-first styling
+- **[Zustand](https://zustand-demo.pmnd.rs/)** - Lightweight state management
+- **[Bun](https://bun.sh/)** - Fast JavaScript runtime and package manager
 
-### Automatic Cleanup
-The app includes intelligent data cleanup features:
+### Voice & PWA Features
+- **Web Speech API** - Browser-native voice recognition
+- **PWA** - Install as native app on any device
+- **Offline-First** - Works without internet connection
+- **IndexedDB** - Local data persistence
 
-- **Duplicate Detection**: Finds sessions with same template, user, and timeframe
-- **Smart Preservation**: Keeps the most complete and recent sessions
-- **Integrity Checks**: Regular database health monitoring
-- **Performance Boost**: Improved app speed after cleanup
-
-### Manual Cleanup
-Access the cleanup tool:
-1. Look for the "Cleanup" button in the status banner (SQLite mode only)
-2. Review the integrity report
-3. Run cleanup to remove duplicates and orphaned data
-4. App will reload with cleaned data
-
-## 🏗️ Architecture
-
-### Tech Stack
-- **Frontend**: Next.js 15, React 19, TypeScript
-- **Styling**: Tailwind CSS with custom voice UI components
-- **Voice Recognition**: Enhanced Web Speech API with custom pattern matching
-- **State Management**: Zustand with persistence
-- **Database**: IndexedDB via custom SQLite service
-- **PWA**: Next.js PWA configuration
-
-### Enhanced Voice Recognition System
+### Voice Recognition Architecture (Needs Improvement)
 ```typescript
-// Advanced pattern matching with confidence scoring
+// Current implementation with limited accuracy
 const DHIKR_PATTERNS = {
   subhanallah: {
     arabic: ["سبحان الله", "سُبْحَانَ اللَّهِ"],
-    transliteration: ["subhan allah", "subhanallah", "sobhan allah"],
-    keywords: ["subhan", "sophan", "sobhan"],
-    weight: 1.0
+    transliteration: ["subhan allah", "subhanallah"],
+    confidence: 0.85 // Often lower in practice
   }
-  // ... more patterns
+  // ... more patterns - all need refinement
 };
 
-// Fuzzy matching with similarity scoring
-function detectDhikrAdvanced(transcript: string) {
-  // Exact match (95% confidence)
-  // Keyword matching (85% confidence)  
-  // Fuzzy matching with Levenshtein distance
-  return { dhikr, confidence, method };
-}
+// Known Issues:
+// - Pattern matching too simplistic
+// - No fuzzy matching for Arabic pronunciation variations
+// - Confidence scoring not calibrated properly
+// - No noise filtering or audio preprocessing
 ```
 
-### Data Deduplication
-```typescript
-// Intelligent duplicate detection
-class DataDeduplication {
-  // Find duplicates based on:
-  // - Same user and template
-  // - Started within 5 minutes
-  // - Similar target count
-  static async findDuplicateSessions()
-  
-  // Keep best session (completed > higher count > more recent)
-  static async removeDuplicateSessions()
-}
+## 🏗️ Project Structure
+
+```
+thakkir/
+├── src/
+│   ├── app/                 # Next.js App Router
+│   │   ├── dhikr/          # Dhikr-specific components
+│   │   └── ui/             # Reusable UI components
+│   ├── hooks/
+│   │   ├── useVoiceRecognition.ts  # Voice recognition hook
+│   │   └── useDhikrDatabase.ts     # Database integration
+│   ├── stores/             # Zustand stores
+│   ├── types/              # TypeScript definitions
+│   └── lib/                # Utilities and services
+├── public/                 # Static assets
+└── package.json
 ```
 
-## 🎨 Customization
+## ⚠️ Known Issues & Improvements Needed
 
-### Voice Recognition Settings
-```typescript
-// Configure recognition behavior
-const voiceConfig = {
-  language: "both", // "arabic" | "english" | "both"
-  continuousListening: true,
-  confidenceThreshold: 0.6,
-  autoRestart: true
-};
+### Voice Recognition Limitations
+Based on the [React Speech Recognition implementation guide](https://reverieinc.com/blog/implementing-react-speech-recognition-in-your-apps/), our current implementation needs significant improvements:
+
+#### Current Problems
+- **Poor Arabic Recognition**: Web Speech API has limited Arabic language support
+- **No Noise Reduction**: Background noise severely impacts recognition accuracy
+- **Simplistic Pattern Matching**: Current regex patterns are too basic for pronunciation variations
+- **No Audio Preprocessing**: Raw audio input without filtering or enhancement
+- **Missing Fallback Mechanisms**: No graceful degradation when recognition fails
+- **Inconsistent Browser Support**: Results vary dramatically across browsers and devices
+
+#### Planned Improvements
+- **Enhanced Arabic Support**: Integration with specialized Arabic speech recognition APIs
+- **Audio Preprocessing**: Noise reduction and audio enhancement before recognition
+- **Fuzzy Matching**: Better handling of pronunciation variations and accents
+- **Machine Learning Models**: Custom trained models for Islamic dhikr recognition
+- **Progressive Enhancement**: Better fallback to manual counting when voice fails
+- **Real-time Feedback**: Visual indicators for recognition confidence and status
+
+#### Technical Debt
+- **Web Speech API Limitations**: Consider migrating to more robust speech recognition services
+- **Pattern Recognition**: Replace simple string matching with ML-based approaches
+- **Performance Optimization**: Reduce recognition latency and improve accuracy
+- **Cross-Platform Consistency**: Ensure similar behavior across all supported browsers
+
+## ⚙️ Configuration
+
+### Environment Variables
+Create a `.env.local` file for optional database features:
+
+```env
+# Optional: For future cloud sync features
+TURSO_DATABASE_URL=your_database_url
+TURSO_AUTH_TOKEN=your_auth_token
 ```
 
-### Database Configuration
-```typescript
-// Choose database mode
-const dbConfig = {
-  type: "sqlite", // "sqlite" | "demo"
-  autoCleanup: true,
-  integrityChecks: true
-};
-```
+> **Note**: The app works perfectly without these - they're only for future cloud sync features.
 
 ## 📱 PWA Installation
 
-### Mobile Installation
-1. Open the app in your mobile browser
+### Install on Mobile
+1. Open app in mobile browser
 2. Look for "Add to Home Screen" prompt
-3. Follow the installation steps
-4. Launch from your home screen
+3. Tap "Install" or "Add"
+4. Launch from home screen like a native app
 
-### Desktop Installation
-1. Look for the install icon in your browser's address bar
+### Install on Desktop
+1. Look for install icon in browser address bar
 2. Click "Install" when prompted
-3. Launch as a native app
+3. Launch as desktop app
 
 ## 🤝 Contributing
 
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+We welcome contributions! Here's how to get started:
 
 ### Development Setup
-```bash
-# Fork and clone the repository
-git clone https://github.com/yourusername/thakkir.git
+1. **Fork** the repository
+2. **Clone** your fork: `git clone https://github.com/YOUR_USERNAME/thakkir.git`
+3. **Install** dependencies: `bun install`
+4. **Create** feature branch: `git checkout -b feature/your-feature`
+5. **Make** your changes and test thoroughly
+6. **Submit** a pull request
 
-# Create a feature branch
-git checkout -b feature/enhanced-recognition
-
-# Make your changes and test thoroughly
-bun dev
-
-# Submit a pull request
-```
+### What We're Looking For
+- 🎤 **Voice recognition improvements** - better Arabic support
+- 🌍 **Internationalization** - support for more languages
+- 🎨 **UI/UX enhancements** - better mobile experience
+- 📊 **Analytics features** - dhikr tracking and insights
+- 🔧 **Performance optimizations** - faster load times
 
 ## 🐛 Troubleshooting
 
-### Voice Recognition Issues
-- **Not Working**: Check microphone permissions in browser settings
-- **Poor Accuracy**: Ensure quiet environment and clear pronunciation
-- **Browser Support**: Use Chrome, Safari, or Firefox for best results
+### Voice Recognition Issues (Most Common)
 
-### Data Issues
-- **Duplicates**: Use the built-in cleanup tool in SQLite mode
-- **Missing Data**: Check if you're in demo mode vs SQLite mode
-- **Performance**: Run data cleanup to optimize database
+> **🔧 Quick Fix**: Use manual counting instead - it's reliable and always works.
 
-### General Issues
-- **App Not Loading**: Clear browser cache and reload
-- **PWA Problems**: Try reinstalling the PWA
-- **Audio Issues**: Check device audio settings
+#### Voice Recognition Not Working At All
+**Symptoms**: No response when speaking, microphone icon doesn't show activity
+- ✅ **Check microphone permissions** in browser settings (chrome://settings/content/microphone)
+- ✅ **Use Chrome or Edge** - Firefox and Safari have poor Web Speech API support
+- ✅ **Refresh the page** and try again
+- ✅ **Test in incognito mode** to rule out extension conflicts
+- ❌ **If still not working**: This is a known limitation - use manual counting
 
-## 📄 License
+#### Poor Recognition Accuracy (Expected Behavior)
+**Symptoms**: Wrong dhikr detected, random words counted, missed phrases
+- ⚠️ **This is normal** - voice recognition accuracy is currently very low
+- ✅ **Use manual counting** for reliable dhikr tracking
+- ✅ **Speak very slowly** and pause between phrases if testing voice features
+- ✅ **Use English transliteration** instead of Arabic for slightly better results
+- ✅ **Perfect quiet environment** required - any background noise will cause issues
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+#### Browser-Specific Issues
+**Chrome/Edge (Best Support)**
+- Generally works but with low accuracy
+- May stop working randomly - restart recognition
+
+**Safari (Limited Support)**
+- Very inconsistent results
+- Often fails to recognize Arabic completely
+- iOS Safari may work better than desktop
+
+**Firefox (Not Recommended)**
+- Poor Web Speech API implementation
+- May not work at all for Arabic
+- Use Chrome/Edge instead
+
+**Mobile Browsers**
+- Results vary dramatically by device
+- Older devices often don't work
+- Use manual counting on mobile
+
+#### When Voice Recognition Stops Working
+**Common Causes:**
+- Browser updated and broke compatibility
+- Microphone permissions revoked
+- System audio settings changed
+- Network connectivity issues (some browsers require internet)
+
+**Solutions:**
+1. **Reset browser permissions** for the site
+2. **Clear browser cache** and cookies
+3. **Restart the browser** completely
+4. **Test on different device/browser**
+5. **Fall back to manual counting** (recommended)
+
+### General App Issues
+
+**App Won't Load**
+- Clear browser cache and cookies
+- Check internet connection
+- Try incognito/private mode
+- Disable browser extensions temporarily
+
+**Manual Counting Not Working**
+- This should always work - if not, report as critical bug
+- Try refreshing the page
+- Check if JavaScript is enabled
+
+**PWA Installation Problems**
+- Use Chrome or Safari for installation
+- Check if already installed (look in app drawer/start menu)
+- Try uninstalling and reinstalling
+- Some browsers don't support PWA installation
+
+**Performance Issues**
+- App running slowly may indicate browser compatibility issues
+- Try different browser
+- Close other tabs to free up memory
+- Restart browser if problems persist
+
+### Getting Help
+
+If you're experiencing issues:
+
+1. **Try manual counting first** - it's the reliable method
+2. **Check browser compatibility** - use Chrome or Edge
+3. **Report persistent bugs** on GitHub Issues with:
+   - Browser type and version
+   - Operating system
+   - Specific error messages
+   - Steps to reproduce
+
+> **Remember**: Voice recognition is experimental. Manual counting is the primary, reliable method for dhikr tracking.
+
+## 📊 Features Roadmap
+
+### Current (v1.0)
+- ✅ **Manual dhikr counting** - Reliable tap-to-count functionality
+- ✅ **One-page responsive design** - Clean mobile-first layout
+- ✅ **Offline PWA functionality** - Works without internet
+- ✅ **Real-time progress tracking** - Visual feedback and statistics
+- ⚠️ **Experimental voice recognition** - Limited accuracy, needs improvement
+
+### High Priority (v1.1) - Voice Recognition Overhaul
+- 🔧 **Improved Arabic speech recognition** - Better pattern matching and pronunciation handling
+- 🔧 **Audio preprocessing** - Noise reduction and signal enhancement
+- 🔧 **Enhanced browser compatibility** - More consistent cross-platform behavior
+- 🔧 **Confidence indicators** - Real-time feedback on recognition quality
+- 🔧 **Fallback mechanisms** - Graceful degradation when voice fails
+
+### Coming Soon (v1.2)
+- 🔄 **Cloud sync and backup** - Save dhikr sessions across devices
+- 📊 **Enhanced analytics** - Detailed progress tracking and insights
+- 🌙 **Islamic calendar integration** - Prayer times and Islamic dates
+- 🎨 **Accessibility improvements** - Better support for assistive technologies
+
+### Future (v2.0)
+- 🎤 **Advanced voice features** - Custom dhikr phrases and voice commands
+- 📚 **Extended dhikr library** - More Islamic prayers and supplications
+- 👥 **Community features** - Share progress and join dhikr circles
+- 🌍 **Multi-language interface** - Support for more languages beyond Arabic/English
+- 🔔 **Smart notifications** - Prayer reminders and dhikr suggestions
 
 ## 🙏 Acknowledgments
 
-- **Inspiration**: [Tarteel](https://tarteel.ai) for advanced Arabic voice recognition patterns
-- **Voice Recognition**: Enhanced with custom pattern matching algorithms
-- **Islamic Content**: Traditional dhikr phrases with proper Arabic text
-- **Community**: Muslim developers and users who provided feedback
+- **Inspiration**: Islamic tradition of dhikr and remembrance of Allah
+- **Voice Technology**: Built on Web Speech API standards
+- **Community**: Muslim developers who provided feedback and testing
+- **Design**: Inspired by Islamic art and typography
 
-## 📞 Support
+## 📞 Support & Community
 
-- **Issues**: [GitHub Issues](https://github.com/yourusername/thakkir/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/yourusername/thakkir/discussions)
-- **Email**: support@thakkir.app
+- **🐛 Report Issues**: [GitHub Issues](https://github.com/AmrElsayyad/thakkir/issues)
+- **💬 Discussions**: [GitHub Discussions](https://github.com/AmrElsayyad/thakkir/discussions)
+- **📧 Contact**: [Open an issue](https://github.com/AmrElsayyad/thakkir/issues/new) for questions
 
 ---
 
-**May Allah accept our dhikr and grant us His remembrance at all times. Ameen.** 🤲
+**May Allah accept our dhikr and grant us consistency in His remembrance. Ameen.** 🤲
 
 *Built with ❤️ for the Muslim Ummah*
