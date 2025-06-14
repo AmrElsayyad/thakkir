@@ -1,4 +1,4 @@
-import { createClient, type Client } from '@libsql/client';
+import { Client, createClient } from "@libsql/client";
 
 // Environment variables for Turso configuration
 const TURSO_URL = process.env.NEXT_PUBLIC_TURSO_URL;
@@ -7,19 +7,21 @@ const TURSO_AUTH_TOKEN = process.env.NEXT_PUBLIC_TURSO_AUTH_TOKEN;
 // Create the main database client
 export const createTursoClient = (userId?: string): Client => {
   // For development, use a local SQLite file
-  if (process.env.NODE_ENV === 'development' && !TURSO_URL) {
+  if (process.env.NODE_ENV === "development" && !TURSO_URL) {
     return createClient({
-      url: `file:${userId ? `dhikr-${userId}` : 'dhikr'}.db`,
+      url: `file:${userId ? `dhikr-${userId}` : "dhikr"}.db`,
     });
   }
 
   // For production with Turso cloud
   if (!TURSO_URL || !TURSO_AUTH_TOKEN) {
-    throw new Error('Missing Turso configuration. Please set NEXT_PUBLIC_TURSO_URL and NEXT_PUBLIC_TURSO_AUTH_TOKEN');
+    throw new Error(
+      "Missing Turso configuration. Please set NEXT_PUBLIC_TURSO_URL and NEXT_PUBLIC_TURSO_AUTH_TOKEN"
+    );
   }
 
   return createClient({
-    url: `file:${userId ? `dhikr-${userId}` : 'dhikr'}.db`, // Local SQLite file
+    url: `file:${userId ? `dhikr-${userId}` : "dhikr"}.db`, // Local SQLite file
     syncUrl: TURSO_URL, // Turso cloud URL
     authToken: TURSO_AUTH_TOKEN,
   });
@@ -95,9 +97,9 @@ export const initializeDatabase = async (client: Client) => {
       )`,
     ]);
 
-    console.log('Database initialized successfully');
+    console.log("Database initialized successfully");
   } catch (error) {
-    console.error('Failed to initialize database:', error);
+    console.error("Failed to initialize database:", error);
     throw error;
   }
 };
@@ -105,14 +107,12 @@ export const initializeDatabase = async (client: Client) => {
 // Sync data when online
 export const syncDatabase = async (client: Client) => {
   try {
-    // @ts-ignore - Turso offline sync is in beta, types might not be fully available
     if (client.sync) {
-      // @ts-ignore
       await client.sync();
-      console.log('Database synced successfully');
+      console.log("Database synced successfully");
     }
   } catch (error) {
-    console.warn('Failed to sync database:', error);
+    console.warn("Failed to sync database:", error);
     // Don't throw - app should continue working offline
   }
-}; 
+};

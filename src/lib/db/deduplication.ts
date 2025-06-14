@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import { sqliteService } from "./sqlite-service";
 
-import type { DhikrSession, DhikrTemplate } from "@/types/dhikr";
+import type { DhikrSession } from "@/types/dhikr";
 
 // Deduplication utility for dhikr data
 export class DataDeduplication {
@@ -253,7 +253,10 @@ export class DataDeduplication {
 // Auto-cleanup hook for components
 export const useDataCleanup = () => {
   const [isCleaningUp, setIsCleaningUp] = useState(false);
-  const [cleanupReport, setCleanupReport] = useState<any>(null);
+  const [cleanupReport, setCleanupReport] = useState<{
+    sessionResults: { removed: number; kept: number; errors: string[] };
+    orphanedSessions: number;
+  } | null>(null);
 
   const performCleanup = async () => {
     setIsCleaningUp(true);

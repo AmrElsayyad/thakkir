@@ -12,12 +12,21 @@ interface DataCleanupDialogProps {
   onComplete?: () => void;
 }
 
+type IntegrityReport = {
+  totalSessions: number;
+  totalTemplates: number;
+  duplicateSessions: number;
+  orphanedSessions: number;
+  lastCleanup: string | null;
+};
+
 export const DataCleanupDialog = ({
   isOpen,
   onClose,
   onComplete,
 }: DataCleanupDialogProps) => {
-  const [integrityReport, setIntegrityReport] = useState<any>(null);
+  const [integrityReport, setIntegrityReport] =
+    useState<IntegrityReport | null>(null);
   const { isCleaningUp, cleanupReport, performCleanup, getIntegrityReport } =
     useDataCleanup();
 
@@ -196,9 +205,11 @@ export const DataCleanupDialog = ({
                 onClick={handleCleanup}
                 disabled={
                   isCleaningUp ||
-                  (integrityReport &&
+                  !!(
+                    integrityReport &&
                     integrityReport.duplicateSessions === 0 &&
-                    integrityReport.orphanedSessions === 0)
+                    integrityReport.orphanedSessions === 0
+                  )
                 }
                 className="flex-1"
               >

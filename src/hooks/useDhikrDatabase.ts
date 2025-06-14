@@ -6,7 +6,7 @@ import { config } from '@/lib/config';
 import { sqliteService } from '@/lib/db/sqlite-service';
 import { useDhikrStore } from '@/stores/dhikr-store';
 
-import type { DhikrTemplate, DhikrSession } from "@/types/dhikr";
+import type { DhikrTemplate } from "@/types/dhikr";
 
 // Default dhikr templates (always available)
 const DEFAULT_TEMPLATES: DhikrTemplate[] = [

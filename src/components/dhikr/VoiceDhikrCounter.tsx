@@ -30,7 +30,6 @@ export const VoiceDhikrCounter = ({ className }: VoiceDhikrCounterProps) => {
   // Database integration
   const {
     isInitialized,
-    isPersistenceAvailable,
     databaseType,
     templates,
     currentSession,
@@ -43,7 +42,7 @@ export const VoiceDhikrCounter = ({ className }: VoiceDhikrCounterProps) => {
 
   // Convert database templates to UI format, removing duplicates
   const uiTemplates: UIDhikrTemplate[] = templates.reduce(
-    (unique: any[], template) => {
+    (unique: UIDhikrTemplate[], template) => {
       // Check if this template already exists by id or transliteration
       const existing = unique.find(
         (t) =>
@@ -329,7 +328,7 @@ export const VoiceDhikrCounter = ({ className }: VoiceDhikrCounterProps) => {
                   </p>
                   <p className="text-xs text-blue-600 mt-1">
                     Supports Arabic and English pronunciations. Counts work
-                    perfectly but won't be saved between sessions.
+                    perfectly but won&apos;t be saved between sessions.
                   </p>
                 </>
               )}
@@ -433,7 +432,7 @@ export const VoiceDhikrCounter = ({ className }: VoiceDhikrCounterProps) => {
           {lastRecognition && (
             <div className={styles.recognitionDisplay}>
               <span className="text-sm text-gray-600">
-                Heard: "{lastRecognition}"
+                Heard: &quot;{lastRecognition}&quot;
               </span>
             </div>
           )}
@@ -447,7 +446,7 @@ export const VoiceDhikrCounter = ({ className }: VoiceDhikrCounterProps) => {
           {currentTranscript && (
             <div className={styles.transcriptDisplay}>
               <span className="text-sm text-blue-600">
-                Processing: "{currentTranscript}"
+                Processing: &quot;{currentTranscript}&quot;
               </span>
             </div>
           )}
@@ -475,9 +474,12 @@ export const VoiceDhikrCounter = ({ className }: VoiceDhikrCounterProps) => {
                 🎤 Voice Test Instructions:
               </div>
               <div className="text-xs text-purple-600 space-y-1">
-                <div>• Click "Start Test" and allow microphone access</div>
                 <div>
-                  • Try saying: "Subhan Allah", "Allahu Akbar", "Alhamdulillah"
+                  • Click &quot;Start Test&quot; and allow microphone access
+                </div>
+                <div>
+                  • Try saying: &quot;Subhan Allah&quot;, &quot;Allahu
+                  Akbar&quot;, &quot;Alhamdulillah&quot;
                 </div>
                 <div>• Watch for transcript and dhikr detection above</div>
                 <div>
@@ -499,7 +501,10 @@ export const VoiceDhikrCounter = ({ className }: VoiceDhikrCounterProps) => {
                 💡 Voice Session Instructions:
               </div>
               <div className="text-xs text-blue-600 space-y-1">
-                <div>• Speak clearly: "Subhan Allah" or "Allah Akbar"</div>
+                <div>
+                  • Speak clearly: &quot;Subhan Allah&quot; or &quot;Allah
+                  Akbar&quot;
+                </div>
                 <div>• Each recognized dhikr will increment the counter</div>
                 <div>
                   • Current total count: {counter.currentCount} / {targetCount}

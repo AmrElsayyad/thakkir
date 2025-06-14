@@ -317,15 +317,13 @@ export class DhikrService {
   // Sync operation
   async syncToCloud(): Promise<boolean> {
     try {
-      // @ts-ignore - Turso offline sync API might not have full types yet
       if (this.client.sync) {
-        // @ts-ignore
         await this.client.sync();
         return true;
       }
       return false;
     } catch (error) {
-      console.warn('Sync failed, will retry later:', error);
+      console.warn("Sync failed, will retry later:", error);
       return false;
     }
   }
