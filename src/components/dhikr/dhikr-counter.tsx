@@ -1,10 +1,11 @@
 'use client';
 
+import { CheckCircle, Pause, Play, RotateCcw } from "lucide-react";
 import React, { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Button } from '@/components/ui/button';
-import { useDhikrStore } from '@/stores/dhikr-store';
-import { Play, Pause, RotateCcw, CheckCircle } from 'lucide-react';
+
+import { Button } from "@/components/ui/button";
+import { useDhikrStore } from "@/stores/dhikr-store";
+
 import type { DhikrTemplate } from '@/types/dhikr';
 
 interface DhikrCounterProps {
@@ -99,9 +100,7 @@ export const DhikrCounter: React.FC<DhikrCounterProps> = ({
             {template.transliteration}
           </p>
         )}
-        <p className="text-base text-gray-500">
-          {template.translation}
-        </p>
+        <p className="text-base text-gray-500">{template.translation}</p>
       </div>
 
       {/* Progress Ring */}
@@ -119,7 +118,7 @@ export const DhikrCounter: React.FC<DhikrCounterProps> = ({
               className="text-gray-200"
             />
             {/* Progress circle */}
-            <motion.circle
+            <circle
               cx="50"
               cy="50"
               r="45"
@@ -127,28 +126,24 @@ export const DhikrCounter: React.FC<DhikrCounterProps> = ({
               strokeWidth="3"
               fill="none"
               strokeLinecap="round"
-              className="text-emerald-500"
+              className="text-emerald-500 transition-all duration-300 ease-out"
               strokeDasharray={283} // 2 * π * 45
-              initial={{ strokeDashoffset: 283 }}
-              animate={{ 
-                strokeDashoffset: 283 - (283 * progress) / 100 
+              strokeDashoffset={283 - (283 * progress) / 100}
+              style={{
+                transition: "stroke-dashoffset 0.3s ease-out",
               }}
-              transition={{ duration: 0.3 }}
             />
           </svg>
-          
+
           {/* Counter in center */}
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="text-center">
-              <motion.div 
-                className="text-4xl font-bold text-gray-800"
+              <div
+                className="text-4xl font-bold text-gray-800 transition-all duration-200"
                 key={counter.currentCount}
-                initial={{ scale: 1.2, opacity: 0.7 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 0.2 }}
               >
                 {counter.currentCount}
-              </motion.div>
+              </div>
               {counter.targetCount && (
                 <div className="text-sm text-gray-500">
                   of {counter.targetCount}
@@ -162,11 +157,7 @@ export const DhikrCounter: React.FC<DhikrCounterProps> = ({
       {/* Main Counter Button (no progress ring) */}
       {!counter.targetCount && (
         <div className="relative">
-          <motion.div
-            className="relative"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
+          <div className="relative transform transition-transform duration-150 hover:scale-105 active:scale-95">
             <Button
               variant="counter"
               size="counter"
@@ -174,64 +165,48 @@ export const DhikrCounter: React.FC<DhikrCounterProps> = ({
               disabled={!counter.isActive}
               className="relative overflow-hidden"
             >
-              <motion.span
+              <span
                 key={counter.currentCount}
-                initial={{ scale: 1.2, opacity: 0.7 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 0.2 }}
+                className="transition-all duration-200"
               >
                 {counter.currentCount}
-              </motion.span>
-              
+              </span>
+
               {/* Ripple effect */}
-              <AnimatePresence>
-                {showRipple && (
-                  <motion.div
-                    key={rippleKey}
-                    className="absolute inset-0 bg-white rounded-full"
-                    initial={{ scale: 0, opacity: 0.6 }}
-                    animate={{ scale: 2, opacity: 0 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.3 }}
-                  />
-                )}
-              </AnimatePresence>
+              {showRipple && (
+                <div
+                  key={rippleKey}
+                  className="absolute inset-0 bg-white rounded-full opacity-60 animate-ping"
+                />
+              )}
             </Button>
-          </motion.div>
+          </div>
         </div>
       )}
 
       {/* With target count - tap area around progress ring */}
       {counter.targetCount && (
-        <motion.div
-          className="absolute inset-0 flex items-center justify-center cursor-pointer"
+        <div
+          className="absolute inset-0 flex items-center justify-center cursor-pointer transform transition-transform duration-150 active:scale-98"
           onClick={handleCounterTap}
-          whileTap={{ scale: 0.98 }}
-          style={{ 
-            width: '192px', 
-            height: '192px',
-            margin: 'auto',
-            borderRadius: '50%',
+          style={{
+            width: "192px",
+            height: "192px",
+            margin: "auto",
+            borderRadius: "50%",
           }}
         >
           {/* Invisible tap target */}
-        </motion.div>
+        </div>
       )}
 
       {/* Completion celebration */}
-      <AnimatePresence>
-        {isCompleted && (
-          <motion.div
-            className="flex items-center space-x-2 text-emerald-600"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-          >
-            <CheckCircle className="w-6 h-6" />
-            <span className="text-lg font-semibold">Target Completed!</span>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {isCompleted && (
+        <div className="flex items-center space-x-2 text-emerald-600 animate-in slide-in-from-bottom-4 duration-300">
+          <CheckCircle className="w-6 h-6" />
+          <span className="text-lg font-semibold">Target Completed!</span>
+        </div>
+      )}
 
       {/* Control Buttons */}
       <div className="flex space-x-4">
@@ -242,7 +217,7 @@ export const DhikrCounter: React.FC<DhikrCounterProps> = ({
             className="flex items-center space-x-2"
           >
             <Play className="w-5 h-5" />
-            <span>{currentSession ? 'Resume' : 'Start'}</span>
+            <span>{currentSession ? "Resume" : "Start"}</span>
           </Button>
         ) : (
           <Button
@@ -255,7 +230,7 @@ export const DhikrCounter: React.FC<DhikrCounterProps> = ({
             <span>Pause</span>
           </Button>
         )}
-        
+
         <Button
           onClick={handleReset}
           variant="secondary"
